@@ -7,7 +7,10 @@ package proyectoprogra;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 
 /**
  * FXML Controller class
@@ -15,6 +18,11 @@ import javafx.fxml.Initializable;
  * @author sebas
  */
 public class Pantalla1FXMLController implements Initializable {
+
+    @FXML
+    private AnchorPane anchorPane;
+    @FXML
+    private Button examinar;
 
     /**
      * Initializes the controller class.
