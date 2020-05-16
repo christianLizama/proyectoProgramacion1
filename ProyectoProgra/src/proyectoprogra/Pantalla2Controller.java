@@ -10,19 +10,22 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
 
 /**
  * FXML Controller class
  *
- * @author sebas
+ * @author Diego Aguilera
  */
-public class Pantalla1FXMLController implements Initializable {
+public class Pantalla2Controller implements Initializable {
 
     @FXML
-    private AnchorPane anchorPane;
+    private Button botonDibujar;
     @FXML
-    private Button examinar;
+    private Button botonDeshacer;
+    @FXML
+    private Button botonRehacer;
+    @FXML
+    private Button botonBorrar;
 
     /**
      * Initializes the controller class.
