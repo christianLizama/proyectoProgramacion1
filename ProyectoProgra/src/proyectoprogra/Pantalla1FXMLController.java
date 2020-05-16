@@ -5,14 +5,12 @@
  */
 package proyectoprogra;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.FileChooser;
 
 /**
  * FXML Controller class
@@ -31,23 +29,7 @@ public class Pantalla1FXMLController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        examinar.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Buscar PDF");
-
-            // Agregar filtros para facilitar la busqueda
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("PDF", "*.pdf")
-            );
-
-            // Obtener pdf seleccionado
-            File pdfFile = fileChooser.showOpenDialog(null);
-
-            // Mostar la imagen
-            if (pdfFile != null) {
-
-            }
-        });
+        // TODO
     }    
     
 }
