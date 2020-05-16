@@ -5,8 +5,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="900.0" prefWidth="1080.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="proyectoprogra.Pantalla2Controller">
+<AnchorPane id="AnchorPane" prefHeight="900.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proyectoprogra.Pantalla2Controller">
    <children>
       <ImageView fitHeight="45.0" fitWidth="1080.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -17,5 +16,6 @@
       <Button fx:id="botonDeshacer" layoutX="53.0" mnemonicParsing="false" opacity="0.0" prefHeight="45.0" prefWidth="46.0" text="Atras" />
       <Button fx:id="botonRehacer" layoutX="102.0" mnemonicParsing="false" opacity="0.0" prefHeight="45.0" prefWidth="46.0" text="Adelante" />
       <Button fx:id="botonBorrar" layoutX="150.0" layoutY="-1.0" mnemonicParsing="false" opacity="0.0" prefHeight="45.0" prefWidth="46.0" text="Borrar" />
+      <ImageView fx:id="ImagenPrincipal" fitHeight="854.0" fitWidth="1080.0" layoutY="46.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>
