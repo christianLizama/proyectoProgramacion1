@@ -50,7 +50,7 @@ public class Pantalla1FXMLController implements Initializable {
 
             // Obtener pdf seleccionado
             File pdfFile = fileChooser.showOpenDialog(null);
-
+            System.out.println("print prueba");
             // Mostar la imagen
             if (pdfFile != null) {
                 ((Node) (event.getSource())).getScene().getWindow().hide();//cerrar ventana
