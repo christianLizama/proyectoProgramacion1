@@ -5,6 +5,7 @@
  */
 package proyectoprogra;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -21,6 +22,10 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javax.imageio.ImageIO;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
 
 /**
  * FXML Controller class
@@ -39,6 +44,7 @@ public class Pantalla1FXMLController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Pantalla2Controller pantalla2 = new Pantalla2Controller();
         examinar.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Buscar PDF");
@@ -66,7 +72,7 @@ public class Pantalla1FXMLController implements Initializable {
                     Logger.getLogger(Pantalla1FXMLController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
-                
+                pantalla2.PDF2Imagen(pdfFile);
                     
                 
                 
