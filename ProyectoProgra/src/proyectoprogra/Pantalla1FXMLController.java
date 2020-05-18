@@ -33,12 +33,18 @@ public class Pantalla1FXMLController implements Initializable {
     private AnchorPane anchorPane;
     @FXML
     private Button examinar;
+    
 
+ 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        
+        
+        Pantalla2Controller pantalla2 = new Pantalla2Controller();
         examinar.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Buscar PDF");
@@ -50,29 +56,17 @@ public class Pantalla1FXMLController implements Initializable {
 
             // Obtener pdf seleccionado
             File pdfFile = fileChooser.showOpenDialog(null);
-
-            // Mostar la imagen
-            if (pdfFile != null) {
-                ((Node) (event.getSource())).getScene().getWindow().hide();//cerrar ventana
-                try {
-                    Parent root = FXMLLoader.load(getClass().getResource("Pantalla2.fxml"));
-                    
-                    Scene scene = new Scene(root);
-                    Stage stage = new Stage();
-                    stage.setScene(scene);
-
-                    stage.show();
-                } catch (IOException ex) {
-                    Logger.getLogger(Pantalla1FXMLController.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            
+            
+            
+            ((Node) (event.getSource())).getScene().getWindow().hide();//cerrar ventana
+            
+            pantalla2.PDF2Imagen(pdfFile);
+            
                 
                 
-                    
-                
-                
-                
-
-            }
+            
+         
         });
     }    
     
