@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 package proyectoprogra;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import proyectoprogra.*;
 
 import java.awt.image.BufferedImage;
@@ -14,18 +16,23 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import static javafx.scene.input.KeyCode.R;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -58,17 +65,52 @@ public class Pantalla2Controller implements Initializable {
     private Button botonBorrar;
     @FXML
     private AnchorPane ventanaPDF;
+    
+    double xOffset = 0; 
+    double yOffset = 0;
+    private Canvas canvas = new Canvas();
+    
+    int bandera=0;
+    
+    double origenX=0;
+    double origenY=0;
+    
+    double ancho=0;
+    double alto=0;
+    
+    GraphicsContext gc;
+    @FXML
+    private ImageView imagenBotones;
+    int largoBtn;
+
    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        // TODO
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        int width = gd.getDisplayMode().getWidth();
+        int height = gd.getDisplayMode().getHeight();
+        
+        imagenBotones.setFitWidth(width);
+        imagenBotones.setFitHeight(width/24);
+        
+        
+        
+        
     }    
     
     public void PDF2Imagen(File pdfFile) {
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        int width = gd.getDisplayMode().getWidth();
+        int height = gd.getDisplayMode().getHeight();
+        largoBtn=width/19;
         if(pdfFile!=null){
+            
+            
+            
             
             try (PDDocument documento = PDDocument.load(pdfFile)) {
             PDFRenderer pdfRenderer = new PDFRenderer(documento);
@@ -88,31 +130,83 @@ public class Pantalla2Controller implements Initializable {
                 ImageView imagenPDF = new ImageView(image);//Se crea un archivo de tipo imageView para poder visualizar
                 
                 //Se definen los tamaños de la imagen
-                imagenPDF.setFitHeight(1800);
-                imagenPDF.setFitWidth(1080);
+                
                
                 
                 try {
                     
                     Parent root1 = FXMLLoader.load(getClass().getResource("Pantalla2.fxml"));//La pantalla 2
-                    StackPane escenaCompleta = new StackPane();//La escena completa
-                    AnchorPane ventanaImagen = new AnchorPane();//Contiene el scroll
+                   
                     
+        
+                    imagenPDF.setFitHeight(width*1.6);
+                    imagenPDF.setFitWidth(width);
+                    
+                    StackPane escenaCompleta = new StackPane();//La escena completa
+                    
+                    AnchorPane ventanaImagen = new AnchorPane();//Contiene el scroll
+                    ventanaImagen.setMaxSize(width, height-width/24);
                     ScrollPane scrollPDF = new ScrollPane();//El scroll del PDF
-                    scrollPDF.setContent(imagenPDF);//Se pone la imagen en scroll
-                    scrollPDF.setLayoutY(55);
-                    scrollPDF.setPrefSize(1080, 720);
+                    AnchorPane imagenEntera = new AnchorPane();
+                    imagenEntera.setMaxHeight(width*1.6);
+                    imagenEntera.setMaxWidth(width);
+                    imagenEntera.getChildren().addAll(imagenPDF,canvas);
+                    
+                    scrollPDF.setContent(imagenEntera);//Se pone la imagen en scroll
+                    
+                    scrollPDF.setLayoutY(width/24);
+                    scrollPDF.setPrefSize(width, (height-width/24));
                     scrollPDF.setStyle("fx-border-color: white;");
-                 
                     
                     ventanaImagen.getChildren().add(scrollPDF);//Se carga el scroll a la ventana
-                    ventanaImagen.setLayoutY(45);
+                   
+                    
+                    ventanaImagen.setLayoutY(width/24);
                     escenaCompleta.getChildren().addAll(root1,ventanaImagen);// Se añade la pantalla de editar y la imagen del PDF
                     
-                    Scene escene = new Scene(escenaCompleta);//Se carga la escena total
-                    Stage stage = new Stage();//Se crea el Escenario
-                    stage.setScene(escene);//Se monta la escena en el escenario
+                    
+                    
+                    
+                    canvas.setHeight((width*1.6));
+                    canvas.setWidth(width*3);
+                    scrollPDF.setOnMouseClicked((events)->{
+                        
+                        bandera++;
+                        if (bandera==1) {
+                            origenX=xOffset;
+                            origenY=yOffset-(width/24)+10;
+                        }
+                        if (bandera==2) {
+                            //System.out.println("Origen X "+origenX+"  Y "+origenY );
+                            ancho=xOffset-origenX;
+                            alto=yOffset-origenY-(width/24)+10;
+                            gc = canvas.getGraphicsContext2D();
 
+                            gc.strokeRect(origenX, origenY, ancho, alto);
+                            //System.out.println(ancho+"  "+alto);
+                            bandera=0;
+                        }          
+                    });
+                    
+                    
+                    
+                    
+                    Scene escene = new Scene(escenaCompleta,width, height);//Se carga la escena total
+                    
+                    Stage stage = new Stage();//Se crea el Escenario
+                    
+                    
+                    scrollPDF.setOnMousePressed(new EventHandler<MouseEvent>() { 
+                        @Override
+                        public void handle(MouseEvent event) {
+                            
+                            xOffset = event.getSceneX();
+                            yOffset = event.getSceneY();
+                            System.out.println(xOffset+"  "+yOffset);
+                        }
+                    });
+                    
+                    stage.setScene(escene);//Se monta la escena en el escenario
                     stage.show();//Se muestra el escenario
                     
                 } catch (IOException ex) {
@@ -128,4 +222,8 @@ public class Pantalla2Controller implements Initializable {
         }
        
     }
+    
+
+
+    
 }
