@@ -77,6 +77,8 @@ public class Pantalla2Controller implements Initializable {
     double ancho=0;
     double alto=0;
     
+    int indi=0;
+    
     GraphicsContext gc;
     @FXML
     private ImageView imagenBotones;
@@ -88,14 +90,7 @@ public class Pantalla2Controller implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        int width = gd.getDisplayMode().getWidth();
-        int height = gd.getDisplayMode().getHeight();
-        
-        imagenBotones.setFitWidth(width);
-        imagenBotones.setFitHeight(width/24);
-        
+       
         
         
         
@@ -107,9 +102,6 @@ public class Pantalla2Controller implements Initializable {
         int height = gd.getDisplayMode().getHeight();
         largoBtn=width/19;
         if(pdfFile!=null){
-            
-            
-            
             
             try (PDDocument documento = PDDocument.load(pdfFile)) {
             PDFRenderer pdfRenderer = new PDFRenderer(documento);
@@ -133,74 +125,67 @@ public class Pantalla2Controller implements Initializable {
                
                 
                 try {
+                    Stage stage = new Stage();//Se crea el Escenario
                     
                     Parent root1 = FXMLLoader.load(getClass().getResource("Pantalla2.fxml"));//La pantalla 2
+                    
+                    
+                    Pane escenaCompleta = new Pane();//La escena completa
+                    
+                    Pane imagenfull = new Pane();
+                    imagenfull.getChildren().add(imagenPDF);
+                    imagenfull.setLayoutY(45);
+                    imagenfull.setLayoutX(0);
                    
                     
-        
-                    imagenPDF.setFitHeight(width*1.6);
-                    imagenPDF.setFitWidth(width);
                     
-                    StackPane escenaCompleta = new StackPane();//La escena completa
                     
-                    AnchorPane ventanaImagen = new AnchorPane();//Contiene el scroll
-                    ventanaImagen.setMaxSize(width, height-width/24);
-                    ScrollPane scrollPDF = new ScrollPane();//El scroll del PDF
-                    AnchorPane imagenEntera = new AnchorPane();
-                    imagenEntera.setMaxHeight(width*1.6);
-                    imagenEntera.setMaxWidth(width);
-                    imagenEntera.getChildren().addAll(imagenPDF,canvas);
+                    //imagenPDF.setLayoutY(45);
+                    imagenPDF.setLayoutX(0);
+                    //imagenPDF.setLayoutY(45);
                     
-                    scrollPDF.setContent(imagenEntera);//Se pone la imagen en scroll
+                    escenaCompleta.getChildren().addAll(root1,imagenfull);// Se añade la pantalla de editar y la imagen del PDF
+                    Scene escene = new Scene(escenaCompleta,700, 900);//Se carga la escena total
+                    imagenPDF.setFitHeight(escenaCompleta.getHeight());
+                    imagenPDF.setFitWidth(escenaCompleta.getWidth());
                     
-                    scrollPDF.setLayoutY(width/24);
-                    scrollPDF.setPrefSize(width, (height-width/24));
-                    scrollPDF.setStyle("fx-border-color: white;");
                     
-                    ventanaImagen.getChildren().add(scrollPDF);//Se carga el scroll a la ventana
                    
-                    
-                    ventanaImagen.setLayoutY(width/24);
-                    escenaCompleta.getChildren().addAll(root1,ventanaImagen);// Se añade la pantalla de editar y la imagen del PDF
-                    
-                    
-                    
-                    
-                    canvas.setHeight((width*1.6));
-                    canvas.setWidth(width*3);
-                    scrollPDF.setOnMouseClicked((events)->{
+                    imagenfull.setOnMouseClicked((events)->{
                         
                         bandera++;
                         if (bandera==1) {
                             origenX=xOffset;
-                            origenY=yOffset-(width/24)+10;
+                            origenY=yOffset;
                         }
                         if (bandera==2) {
-                            //System.out.println("Origen X "+origenX+"  Y "+origenY );
+                            System.out.println("pene");
                             ancho=xOffset-origenX;
-                            alto=yOffset-origenY-(width/24)+10;
-                            gc = canvas.getGraphicsContext2D();
-
-                            gc.strokeRect(origenX, origenY, ancho, alto);
-                            //System.out.println(ancho+"  "+alto);
+                            alto=yOffset-origenY;
+                            Button botonEliminar = new Button(); //se crea el boton para cada rectangulo
+                            botonEliminar.setLayoutX(origenX);
+                            botonEliminar.setLayoutY(origenY);
+                            botonEliminar.setPrefSize(ancho, alto); 
+                            botonEliminar.setStyle("-fx-background-color: transparent;-fx-border-color:black;");
+                            botonEliminar.setText(String.valueOf(indi));//se le asigna un numero
+                            indi++;
+                            imagenfull.getChildren().addAll(botonEliminar);
                             bandera=0;
                         }          
-                    });
+                    }); 
                     
+             
                     
+                 
                     
-                    
-                    Scene escene = new Scene(escenaCompleta,width, height);//Se carga la escena total
-                    
-                    Stage stage = new Stage();//Se crea el Escenario
-                    
-                    
-                    scrollPDF.setOnMousePressed(new EventHandler<MouseEvent>() { 
+                    //stage.setFullScreen(true);
+                    //stage.setResizable(false);
+                    imagenfull.setOnMousePressed(new EventHandler<MouseEvent>() { 
                         @Override
                         public void handle(MouseEvent event) {
                             
                             xOffset = event.getSceneX();
-                            yOffset = event.getSceneY();
+                            yOffset = event.getSceneY()-45;
                             System.out.println(xOffset+"  "+yOffset);
                         }
                     });
