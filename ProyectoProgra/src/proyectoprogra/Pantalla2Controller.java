@@ -13,9 +13,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,7 +32,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.R;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
@@ -46,6 +53,7 @@ import javax.swing.ImageIcon;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
+
 
 /**
  * FXML Controller class
@@ -77,28 +85,50 @@ public class Pantalla2Controller implements Initializable {
     double ancho=0;
     double alto=0;
     
+    int indi=0;
+    
     GraphicsContext gc;
+    
+    
     @FXML
     private ImageView imagenBotones;
     int largoBtn;
 
-   
+    final KeyCombination controlZ = new KeyCodeCombination(KeyCode.Z, KeyCombination.SHORTCUT_DOWN);
+    
+    final KeyCombination controly = new KeyCodeCombination(KeyCode.Y, KeyCombination.SHORTCUT_DOWN);    
+
+    
+    Pane imagenfull = new Pane();
+    Pane escenaCompleta = new Pane();//La escena completa
+    
+    
+    Stack<Pane> pilaControlZ = new Stack<>();
+    Pane dibujos = new Pane();
+    
+    
+    private void addKeyHandler(Scene scene) {
+        escenaCompleta.setOnKeyPressed((event) -> {
+            
+            if (controlZ.match(event)) {
+                 event.consume();    
+                 System.out.println("pene");
+                 controlMasZ();
+             }       
+             if(controly.match(event)){
+                 event.consume();
+                 //controlMasY();
+             }          
+
+        });
+    }
+    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        int width = gd.getDisplayMode().getWidth();
-        int height = gd.getDisplayMode().getHeight();
-        
-        imagenBotones.setFitWidth(width);
-        imagenBotones.setFitHeight(width/24);
-        
-        
-        
-        
+      
     }    
     
     public void PDF2Imagen(File pdfFile) {
@@ -107,9 +137,6 @@ public class Pantalla2Controller implements Initializable {
         int height = gd.getDisplayMode().getHeight();
         largoBtn=width/19;
         if(pdfFile!=null){
-            
-            
-            
             
             try (PDDocument documento = PDDocument.load(pdfFile)) {
             PDFRenderer pdfRenderer = new PDFRenderer(documento);
@@ -130,81 +157,78 @@ public class Pantalla2Controller implements Initializable {
                 
                 //Se definen los tamaños de la imagen
                 
-               
-                
                 try {
+                    Stage stage = new Stage();//Se crea el Escenario
                     
                     Parent root1 = FXMLLoader.load(getClass().getResource("Pantalla2.fxml"));//La pantalla 2
+                    
+                    imagenfull.getChildren().add(imagenPDF);
+                    imagenfull.setLayoutY(45);
+                    imagenfull.setLayoutX(0);
                    
+                    //imagenPDF.setLayoutY(45);
+                    imagenPDF.setLayoutX(0);
+                    //imagenPDF.setLayoutY(45);
                     
-        
-                    imagenPDF.setFitHeight(width*1.6);
-                    imagenPDF.setFitWidth(width);
+                    escenaCompleta.getChildren().addAll(root1,imagenfull,dibujos);// Se añade la pantalla de editar y la imagen del PDF
                     
-                    StackPane escenaCompleta = new StackPane();//La escena completa
+                    Scene escene = new Scene(escenaCompleta,700, 900);//Se carga la escena total
+                    imagenPDF.setFitHeight(escenaCompleta.getHeight());
+                    imagenPDF.setFitWidth(escenaCompleta.getWidth());
                     
-                    AnchorPane ventanaImagen = new AnchorPane();//Contiene el scroll
-                    ventanaImagen.setMaxSize(width, height-width/24);
-                    ScrollPane scrollPDF = new ScrollPane();//El scroll del PDF
-                    AnchorPane imagenEntera = new AnchorPane();
-                    imagenEntera.setMaxHeight(width*1.6);
-                    imagenEntera.setMaxWidth(width);
-                    imagenEntera.getChildren().addAll(imagenPDF,canvas);
+                    dibujos.setLayoutY(45);
                     
-                    scrollPDF.setContent(imagenEntera);//Se pone la imagen en scroll
-                    
-                    scrollPDF.setLayoutY(width/24);
-                    scrollPDF.setPrefSize(width, (height-width/24));
-                    scrollPDF.setStyle("fx-border-color: white;");
-                    
-                    ventanaImagen.getChildren().add(scrollPDF);//Se carga el scroll a la ventana
-                   
-                    
-                    ventanaImagen.setLayoutY(width/24);
-                    escenaCompleta.getChildren().addAll(root1,ventanaImagen);// Se añade la pantalla de editar y la imagen del PDF
-                    
-                    
-                    
-                    
-                    canvas.setHeight((width*1.6));
-                    canvas.setWidth(width*3);
-                    scrollPDF.setOnMouseClicked((events)->{
+                    escenaCompleta.setOnMouseClicked((events)->{
                         
                         bandera++;
                         if (bandera==1) {
                             origenX=xOffset;
-                            origenY=yOffset-(width/24)+10;
+                            origenY=yOffset;
                         }
                         if (bandera==2) {
-                            //System.out.println("Origen X "+origenX+"  Y "+origenY );
+                          
                             ancho=xOffset-origenX;
-                            alto=yOffset-origenY-(width/24)+10;
-                            gc = canvas.getGraphicsContext2D();
-
-                            gc.strokeRect(origenX, origenY, ancho, alto);
-                            //System.out.println(ancho+"  "+alto);
+                            alto=yOffset-origenY;
+                            //Pane cuadrado = new Pane();
+                            Button botonEliminar = new Button(); //se crea el boton para cada rectangulo
+                            botonEliminar.setLayoutX(origenX);
+                            botonEliminar.setLayoutY(origenY);
+                            botonEliminar.setPrefSize(ancho, alto); 
+                            botonEliminar.setStyle("-fx-background-color: transparent;-fx-border-color:black;");
+                            botonEliminar.setText(String.valueOf(indi));//se le asigna un numero
+                            
+                            indi++;
+                            
+                            //cuadrado.getChildren().add(botonEliminar);
+                            dibujos.getChildren().add(botonEliminar);
+                            
+                            
+                            pilaControlZ.push(dibujos);
+                            
+                            System.out.println("Cantidad de rectangulos dibujados : " + dibujos.getChildren().size());
+                            //System.out.println("hijos de primer anchor: "+ stackControlZ.peek().getChildren().size() );
+                            System.out.println("Cantidad de hijos de paren pila: "+ pilaControlZ.peek().getChildren().size());
+                            System.out.println(dibujos.getChildren().size());
+                            eliminar();
+                          
                             bandera=0;
+                            
                         }          
-                    });
-                    
-                    
-                    
-                    
-                    Scene escene = new Scene(escenaCompleta,width, height);//Se carga la escena total
-                    
-                    Stage stage = new Stage();//Se crea el Escenario
-                    
-                    
-                    scrollPDF.setOnMousePressed(new EventHandler<MouseEvent>() { 
+                    }); 
+                   
+                    //stage.setFullScreen(true);
+                    //stage.setResizable(false);
+                    escenaCompleta.setOnMousePressed(new EventHandler<MouseEvent>() { 
                         @Override
                         public void handle(MouseEvent event) {
                             
                             xOffset = event.getSceneX();
-                            yOffset = event.getSceneY();
+                            yOffset = event.getSceneY()-45;
+                            
                             System.out.println(xOffset+"  "+yOffset);
                         }
                     });
-                    
+                    addKeyHandler(escene);
                     stage.setScene(escene);//Se monta la escena en el escenario
                     stage.show();//Se muestra el escenario
                     
@@ -219,10 +243,57 @@ public class Pantalla2Controller implements Initializable {
                 System.err.println(ex);
             }
         }
-       
+    }
+   
+    
+    public void eliminar (){
+        for (int i = 0; i < dibujos.getChildren().size(); i++) { //se recorre la lista de botones
+                    
+            Button boton = (Button)dibujos.getChildren().get(i); //obtiene el boton que esta en la poscision i
+
+            boton.setOnAction((ActionEvent events) -> { //sucede la accion
+                int num =  Integer.parseInt(boton.getText()); //obtengo el numero del boton
+                //se borra las lineas del rectangulo
+                //stackControlZ.push(dibujos);
+
+                for (int j = 0; j < dibujos.getChildren().size(); j++) { //se recorre los hijos del panel
+                    Button boton2 = (Button)dibujos.getChildren().get(j); //obtengo los botones
+
+                    if(boton.getText().equals(boton2.getText())){
+                        dibujos.getChildren().remove(j); //se elimina del gridPane en la pos j
+                        //stackControlZ.push(dibujos);
+                    }
+                }                            
+            });          
+        }
+    }
+   
+    private void controlMasZ(){  
+         
+           try {
+               if(!pilaControlZ.isEmpty()){
+                    //stackControlZ.pop();
+                    System.out.println("#pila: "+pilaControlZ.size());
+                    //anchor=anchor2;
+
+
+
+                    //System.out.println("Hijos de anchor1 :" + stackControlZ.peek().getChildren().size());
+                    System.out.println("#pila segundo tamaño: "+pilaControlZ.size());
+                    dibujos.getChildren().remove(pilaControlZ.size()-1);
+                    pilaControlZ.pop();
+                }
+            } catch (Exception e) {
+            }
+           
     }
     
-
-
+    
+    
+    
+    
+    
+    
+        
     
 }
