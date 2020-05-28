@@ -18,6 +18,9 @@ import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -26,10 +29,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.SubScene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
+
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -47,6 +55,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -63,19 +72,12 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 public class Pantalla2Controller implements Initializable {
 
     @FXML
-    private Button botonDibujar;
-    @FXML
-    private Button botonDeshacer;
-    @FXML
-    private Button botonRehacer;
-    @FXML
-    private Button botonBorrar;
-    @FXML
     private AnchorPane ventanaPDF;
     
     double xOffset = 0; 
     double yOffset = 0;
-    private Canvas canvas = new Canvas();
+   
+    
     
     int bandera=0;
     
@@ -87,8 +89,12 @@ public class Pantalla2Controller implements Initializable {
     
     int indi=0;
     
-    GraphicsContext gc;
     
+     
+    ToggleButton botonDibujarr = new ToggleButton();
+    ToggleButton botonBorrarr = new ToggleButton();
+    Button botonIzqq = new Button();
+    Button botonDerr = new Button();
     
     @FXML
     private ImageView imagenBotones;
@@ -105,6 +111,18 @@ public class Pantalla2Controller implements Initializable {
     
     Stack<Pane> pilaControlZ = new Stack<>();
     Pane dibujos = new Pane();
+    
+    
+    @FXML
+    private ImageView ImagenPrincipal;
+    
+    int opcion=0;
+    
+    
+    //Imagenes botones
+    
+    
+    
     
     
     private void addKeyHandler(Scene scene) {
@@ -128,9 +146,12 @@ public class Pantalla2Controller implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+      
+        
       
     }    
-    
+    public int o=0;
     public void PDF2Imagen(File pdfFile) {
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         int width = gd.getDisplayMode().getWidth();
@@ -162,6 +183,36 @@ public class Pantalla2Controller implements Initializable {
                     
                     Parent root1 = FXMLLoader.load(getClass().getResource("Pantalla2.fxml"));//La pantalla 2
                     
+                    
+
+                    
+                    Image botonDi = new Image(new File("botonDib.png").toURI().toString(),35,40,false,true);
+                    ImageView botonDib = new ImageView(botonDi);
+
+                    Image botonBo = new Image(new File("botonBorrar.png").toURI().toString(),35,40,false,true);
+                    ImageView botonBorrar2 = new ImageView(botonBo);
+
+                    Image botonIzq = new Image(new File("botonIzq.png").toURI().toString(),35,40,false,true);
+                    ImageView botonIzquieda = new ImageView(botonIzq);
+                    
+                    
+                    
+                    Image botonDer = new Image(new File("botonDer.png").toURI().toString(),35,40,false,true);
+                    ImageView botonDerecha = new ImageView(botonDer);
+                    
+                    botonDibujarr.setGraphic(botonDib);
+                    botonDibujarr.setStyle("-fx-base: white;");
+
+                    botonIzqq.setGraphic(botonIzquieda);
+                    botonIzqq.setStyle("-fx-base: white;");
+
+                    botonDerr.setGraphic(botonDerecha);
+                    botonDerr.setStyle("-fx-base: white;");
+
+                    botonBorrarr.setGraphic(botonBorrar2);
+                    botonBorrarr.setStyle("-fx-base: white;");
+        
+                    
                     imagenfull.getChildren().add(imagenPDF);
                     imagenfull.setLayoutY(45);
                     imagenfull.setLayoutX(0);
@@ -170,64 +221,170 @@ public class Pantalla2Controller implements Initializable {
                     imagenPDF.setLayoutX(0);
                     //imagenPDF.setLayoutY(45);
                     
-                    escenaCompleta.getChildren().addAll(root1,imagenfull,dibujos);// Se añade la pantalla de editar y la imagen del PDF
                     
+                    
+                    Image botonDis = new Image(new File("botonDib.png").toURI().toString(),35,40,false,true);
+                    ImageView botonDibs = new ImageView(botonDis);
+                  
+                    Button pene = new Button();
+                    pene.setLayoutY(100);
+                    
+                     
+                    
+                    
+                    
+                    escenaCompleta.getChildren().addAll(root1,imagenfull,dibujos,botonDibujarr,botonIzqq,botonDerr,botonBorrarr);// Se añade la pantalla de editar y la imagen del PDF
                     Scene escene = new Scene(escenaCompleta,700, 900);//Se carga la escena total
                     imagenPDF.setFitHeight(escenaCompleta.getHeight());
                     imagenPDF.setFitWidth(escenaCompleta.getWidth());
                     
-                    dibujos.setLayoutY(45);
-                    
-                    escenaCompleta.setOnMouseClicked((events)->{
-                        
-                        bandera++;
-                        if (bandera==1) {
-                            origenX=xOffset;
-                            origenY=yOffset;
-                        }
-                        if (bandera==2) {
-                          
-                            ancho=xOffset-origenX;
-                            alto=yOffset-origenY;
-                            //Pane cuadrado = new Pane();
-                            Button botonEliminar = new Button(); //se crea el boton para cada rectangulo
-                            botonEliminar.setLayoutX(origenX);
-                            botonEliminar.setLayoutY(origenY);
-                            botonEliminar.setPrefSize(ancho, alto); 
-                            botonEliminar.setStyle("-fx-background-color: transparent;-fx-border-color:black;");
-                            botonEliminar.setText(String.valueOf(indi));//se le asigna un numero
-                            
-                            indi++;
-                            
-                            //cuadrado.getChildren().add(botonEliminar);
-                            dibujos.getChildren().add(botonEliminar);
-                            
-                            
-                            pilaControlZ.push(dibujos);
-                            
-                            System.out.println("Cantidad de rectangulos dibujados : " + dibujos.getChildren().size());
-                            //System.out.println("hijos de primer anchor: "+ stackControlZ.peek().getChildren().size() );
-                            System.out.println("Cantidad de hijos de paren pila: "+ pilaControlZ.peek().getChildren().size());
-                            System.out.println(dibujos.getChildren().size());
-                            eliminar();
-                          
-                            bandera=0;
-                            
-                        }          
-                    }); 
+                    botonBorrarr.setLayoutX(153);
+                    botonIzqq.setLayoutX(51);
+                    botonDerr.setLayoutX(102);
                    
-                    //stage.setFullScreen(true);
-                    //stage.setResizable(false);
-                    escenaCompleta.setOnMousePressed(new EventHandler<MouseEvent>() { 
+                    
+                    
+                   
+                    final ToggleGroup Grupito = new ToggleGroup();
+                    Grupito.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
                         @Override
-                        public void handle(MouseEvent event) {
+                        public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
+                            if(newValue == null){
+                                
+                                System.out.println("chao");
+                                
+                                
+                                escenaCompleta.setOnMouseClicked((event) -> { //PARA QUE NO HAGA NADA JAJAJAJAJ                  
+                                
+                                });
+                            }
+                            if(botonBorrarr.isSelected()){
+                                eliminar();
+                            }
                             
-                            xOffset = event.getSceneX();
-                            yOffset = event.getSceneY()-45;
-                            
-                            System.out.println(xOffset+"  "+yOffset);
+                            if(botonDibujarr.isSelected()){
+                                
+                                System.out.println("holi");
+                               
+                                
+                                escenaCompleta.setOnMousePressed(new EventHandler<MouseEvent>() {
+//                               
+                                        @Override
+                                        public void handle(MouseEvent event) {
+
+                                            //if(event.getSceneY()>=45){
+                                            double xAux,yAux;
+
+                                            xAux=event.getSceneX();
+                                            yAux=event.getSceneY();
+
+                                            if (!(xAux>1 && xAux<=700   && yAux>0 && yAux<=45)) {
+                                                xOffset = xAux;
+                                                yOffset = yAux;
+
+                                            }
+                                            else{
+                                                System.out.println(bandera);
+                                                xOffset=0;
+                                                yOffset=0;
+                                                bandera=0;
+                                            }
+
+
+
+                                            //}
+                                            System.out.println(bandera);
+                                            System.out.println(xOffset+"  "+yOffset);
+                                            System.out.println(ancho);
+                                            System.out.println(alto);
+                                        }
+                                
+                                
+                                    });
+                                    
+                                    //Dibuja el rectangulo
+                                    escenaCompleta.setOnMouseClicked((events)->{
+                                    
+
+                                        if(xOffset>1 && xOffset<=700 && yOffset>45 && yOffset<900){
+                                            bandera++;
+                                        }
+
+
+                                        if (bandera==1) {
+                                            origenX=xOffset;
+                                            origenY=yOffset;
+                                        }
+
+
+
+                                        if (bandera==2 ) {
+
+                                            ancho=xOffset-origenX;
+                                            alto=yOffset-origenY;
+
+                                            System.out.println("Bandera"+bandera);
+
+
+                                            if(ancho<=0 || alto<=0 || origenX==0 || origenY==0 || xOffset==0 || yOffset==0 ){
+                                                xOffset=0;
+                                                yOffset=0;
+                                                alto=0;
+                                                ancho=0;
+
+                                                bandera=0;
+
+                                            }
+                                            else{
+                                                //Pane cuadrado = new Pane();
+                                                Button botonEliminar = new Button(); //se crea el boton para cada rectangulo
+                                                botonEliminar.setLayoutX(origenX);
+                                                botonEliminar.setLayoutY(origenY);
+                                                botonEliminar.setPrefSize(ancho, alto); 
+                                                botonEliminar.setStyle("-fx-background-color: transparent;-fx-border-color:black;");
+                                                botonEliminar.setText(String.valueOf(indi));//se le asigna un numero
+
+                                                indi++;
+
+                                                //cuadrado.getChildren().add(botonEliminar);
+                                                dibujos.getChildren().add(botonEliminar);
+
+
+                                                //pilaControlZ.push(dibujos);
+
+                                                //System.out.println("Cantidad de rectangulos dibujados : " + dibujos.getChildren().size());
+                                                //System.out.println("hijos de primer anchor: "+ stackControlZ.peek().getChildren().size() );
+                                                //System.out.println("Cantidad de hijos de paren pila: "+ pilaControlZ.peek().getChildren().size());
+                                                //System.out.println(dibujos.getChildren().size());
+                                                
+                                                xOffset=0;
+                                                yOffset=0;
+
+                                                bandera=0;
+                                                
+                                                
+
+                                            }
+
+
+
+
+
+
+                                        }          
+                                    });
+                                    
+                                    
+                                
+                            }
                         }
+                        
                     });
+                    
+                    botonDibujarr.setToggleGroup(Grupito);
+                    botonBorrarr.setToggleGroup(Grupito);
+//                  
+                    
                     addKeyHandler(escene);
                     stage.setScene(escene);//Se monta la escena en el escenario
                     stage.show();//Se muestra el escenario
@@ -253,8 +410,7 @@ public class Pantalla2Controller implements Initializable {
 
             boton.setOnAction((ActionEvent events) -> { //sucede la accion
                 int num =  Integer.parseInt(boton.getText()); //obtengo el numero del boton
-                //se borra las lineas del rectangulo
-                //stackControlZ.push(dibujos);
+                
 
                 for (int j = 0; j < dibujos.getChildren().size(); j++) { //se recorre los hijos del panel
                     Button boton2 = (Button)dibujos.getChildren().get(j); //obtengo los botones

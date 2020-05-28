@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane id="AnchorPane" fx:id="ventanaPDF" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proyectoprogra.Pantalla2Controller">
    <children>
-      <ImageView fx:id="imagenBotones" fitWidth="1080.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="imagenBotones" fitHeight="53.0" fitWidth="1080.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" visible="false">
          <image>
             <Image url="@barraDeOpciones.png" />
          </image>
       </ImageView>
-      <Button fx:id="botonDibujar" mnemonicParsing="false" opacity="0.0" prefHeight="45.0" prefWidth="52.0" text="Rectangulo" />
-      <Button fx:id="botonDeshacer" layoutX="53.0" mnemonicParsing="false" opacity="0.0" prefHeight="45.0" prefWidth="46.0" text="Atras" />
-      <Button fx:id="botonRehacer" layoutX="102.0" mnemonicParsing="false" opacity="0.0" prefHeight="45.0" prefWidth="46.0" text="Adelante" />
-      <Button fx:id="botonBorrar" layoutX="150.0" layoutY="-1.0" mnemonicParsing="false" opacity="0.0" prefHeight="45.0" prefWidth="46.0" text="Borrar" />
       <ImageView fx:id="ImagenPrincipal" fitHeight="854.0" fitWidth="1080.0" layoutY="46.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>
