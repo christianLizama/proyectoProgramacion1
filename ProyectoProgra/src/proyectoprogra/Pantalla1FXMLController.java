@@ -46,8 +46,7 @@ public class Pantalla1FXMLController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        
+       
         
         Pantalla2Controller pantalla2 = new Pantalla2Controller();
         examinar.setOnAction(event -> {
