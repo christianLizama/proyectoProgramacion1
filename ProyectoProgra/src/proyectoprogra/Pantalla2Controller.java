@@ -243,6 +243,7 @@ public class Pantalla2Controller implements Initializable {
             botonBorrar.setToggleGroup(GrupoBotones);
 
             //addKeyHandler(escene);
+            stage.setResizable(false);
             stage.setScene(escene);//Se monta la escena en el escenario
             stage.show();//Se muestra el escenario
 
@@ -326,6 +327,7 @@ public class Pantalla2Controller implements Initializable {
                     Button botonRectangulo = new Button(); //se crea el boton para cada rectangulo
                     botonRectangulo.setLayoutX(origenX); 
                     botonRectangulo.setLayoutY(origenY);
+                    botonRectangulo.setMinSize(botonRectangulo.USE_PREF_SIZE,botonRectangulo.USE_PREF_SIZE);
                     botonRectangulo.setPrefSize(ancho, alto); 
                     botonRectangulo.setStyle("-fx-background-color: transparent;-fx-border-color:black;");
                     botonRectangulo.setText(String.valueOf(indiceRectangulos));//se le asigna un numero
