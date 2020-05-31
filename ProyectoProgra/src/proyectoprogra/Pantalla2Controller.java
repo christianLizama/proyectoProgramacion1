@@ -114,6 +114,14 @@ public class Pantalla2Controller implements Initializable {
 
     //Stack<Pane> pilaControlZ = new Stack<>();
     
+    //Proporciones de pantalla
+    double anchoPantalla = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
+    double altoPantalla = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
+    double razon1 = 0.4;
+    double razon2 = 0.9;
+            
+    
+    
     
     /**
      * Initializes the controller class.
@@ -134,24 +142,24 @@ public class Pantalla2Controller implements Initializable {
                 
                 PDFRenderer pdfRenderer = new PDFRenderer(documento);
                 //recorre todas las paginas que posea un pdf (en este caso se usaran pdf de una sola pag)
-                for (int page = 0; page < documento.getNumberOfPages(); page++) {
+                
                     //Numero de pagina, escala, tipo de imagen
-                    BufferedImage bim = pdfRenderer.renderImageWithDPI(page, 200, ImageType.RGB);
+                    BufferedImage bim = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
 
                     //Se guarda en la carpeta del proyecto el pdf convertido en imagen
-                    File file = new File("imagen_" + page + ".png");
+                    File file = new File("imagen.png");
                     ImageIO.write(bim, "png", file);
-                    File outputfile = new File("imagen_0.png");
+                    File outputfile = new File("imagen.png");
                     ImageIO.write(bim, "png", outputfile);//Se crea el archivo
 
-                    Image image = new Image(new File("imagen_0.png").toURI().toString());//Se carga la imagen
+                    Image image = new Image(new File("imagen.png").toURI().toString());//Se carga la imagen
                     ImageView imagenPDF = new ImageView(image);//Se crea un archivo de tipo imageView para poder visualizar
 
                     //Se definen los tamaños de la imagen
 
                     cargadorDeEscena(imagenPDF);
 
-                }
+                
             
                 documento.close();
             
@@ -187,11 +195,15 @@ public class Pantalla2Controller implements Initializable {
             imagenfull.setLayoutX(0);
 
             imagenPDF.setLayoutX(0);
-
+            
+            
+            
+            
+            
             escenaCompleta.getChildren().addAll(root1,imagenfull,dibujos,botonDibujar,botonIzqq,botonDerr,botonBorrar);// Se añade la pantalla de editar y la imagen del PDF
-            Scene escene = new Scene(escenaCompleta,700, 900);//Se carga la escena completa en la escena que se mostrará
-            imagenPDF.setFitHeight(escenaCompleta.getHeight());
-            imagenPDF.setFitWidth(escenaCompleta.getWidth());
+            Scene escene = new Scene(escenaCompleta,anchoPantalla*razon1, altoPantalla*razon2);//Se carga la escena completa en la escena que se mostrará
+            imagenPDF.setFitHeight(escene.getHeight()-45);
+            imagenPDF.setFitWidth(escene.getWidth());
 
             botonBorrar.setLayoutX(153);
             botonIzqq.setLayoutX(51);
@@ -219,7 +231,7 @@ public class Pantalla2Controller implements Initializable {
                         dibujarRectangulos();
 
                     }
-                    //si el boron dibujar no se encuentra pulsado no se permite obtener coordenadas
+                    //si el boton dibujar no se encuentra pulsado no se permite obtener coordenadas
                     else if(!botonDibujar.isPressed()){
                         escenaCompleta.setOnMouseClicked(null);
                         escenaCompleta.setOnMousePressed(null);
@@ -256,7 +268,7 @@ public class Pantalla2Controller implements Initializable {
                 xAux=event.getSceneX();
                 yAux=event.getSceneY();
 
-                if (!(xAux>1 && xAux<=escenaCompleta.getWidth()   && yAux>0 && yAux<=45)) {
+                if (!(xAux>1 && xAux<=anchoPantalla*razon1   && yAux>0 && yAux<=45)) {
                     xOffset = xAux;
                     yOffset = yAux;
 
@@ -282,7 +294,7 @@ public class Pantalla2Controller implements Initializable {
         escenaCompleta.setOnMouseClicked((events)->{
 
             //Se limita el margen donde se puede hacer click para dibujar
-            if(xOffset>1 && xOffset<=escenaCompleta.getWidth() && yOffset>45 && yOffset<escenaCompleta.getHeight()){
+            if(xOffset>1 && xOffset<=anchoPantalla*razon1 && yOffset>45 && yOffset<(altoPantalla*razon2)){
                 bandera++;
             }
 
