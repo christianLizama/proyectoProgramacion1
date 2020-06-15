@@ -11,8 +11,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-
-
 /**
  *
  * @author 56945
@@ -26,7 +24,7 @@ public class ProyectoProgra extends Application {
         
         Scene scene = new Scene(root);
         
-        stage.setTitle("PDF Reader");
+        //stage.setTitle("S.E.I.A");
         stage.setResizable(false);
        
         stage.setScene(scene);
@@ -39,9 +37,6 @@ public class ProyectoProgra extends Application {
      */
     public static void main(String[] args) {
         launch(args);
-        
-        
-        System.out.println (System.getProperty ("java.version")); System.out.println (System.getProperty ("javafx.version"));
         
     }
     
