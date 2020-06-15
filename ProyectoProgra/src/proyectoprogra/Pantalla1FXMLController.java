@@ -27,6 +27,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
+
 /**
  * FXML Controller class
  *
@@ -39,7 +40,7 @@ public class Pantalla1FXMLController implements Initializable {
     @FXML
     private Button examinar;
     
-
+    Pantalla2Controller pantalla2 = new Pantalla2Controller();
  
     /**
      * Initializes the controller class.
@@ -48,7 +49,7 @@ public class Pantalla1FXMLController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
        
         
-        Pantalla2Controller pantalla2 = new Pantalla2Controller();
+        
         examinar.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Buscar PDF");
@@ -61,16 +62,10 @@ public class Pantalla1FXMLController implements Initializable {
             // Obtener pdf seleccionado
             File pdfFile = fileChooser.showOpenDialog(null);
             
-            
-            
             ((Node) (event.getSource())).getScene().getWindow().hide();//cerrar ventana
             
             pantalla2.PDF2Imagen(pdfFile);
             
-                
-                
-            
-         
         });
     }    
     
