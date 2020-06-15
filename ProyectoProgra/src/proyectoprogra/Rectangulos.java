@@ -13,14 +13,12 @@ import javafx.scene.control.Button;
  */
 public class Rectangulos {
     
-    
     Button botonRectangulo;
     double x;
     double y;
     double ancho;
     double alto;
    
-
     public double getAncho() {
         return ancho;
     }
