@@ -8,10 +8,10 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="ProyectoProgra.jar" size="23950" download="eager" />
+    <jar href="ProyectoProgra.jar" size="22851" download="eager" />
     <jar href="lib\commons-logging-1.2.jar" size="61829" download="eager" />
-    <jar href="lib\commons-logging.jar.jar" size="52124" download="eager" />
     <jar href="lib\fontbox-2.0.19.jar" size="1561265" download="eager" />
+    <jar href="lib\gson-2.8.6.jar" size="240255" download="eager" />
     <jar href="lib\pdfbox-2.0.19.jar" size="2715618" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="ProyectoProgra" >

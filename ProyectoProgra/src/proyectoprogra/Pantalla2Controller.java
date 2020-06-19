@@ -8,7 +8,9 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -35,6 +37,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -55,6 +58,7 @@ public class Pantalla2Controller implements Initializable {
     ToggleButton botonBorrar = new ToggleButton();
     Button botonIzqq = new Button();
     Button botonDerr = new Button();
+    Button botonGuardar = new Button();
     
     //coordenadas de dibujo
     double xOffset = 0; 
@@ -107,7 +111,7 @@ public class Pantalla2Controller implements Initializable {
     GuardarContenidoPane guardados = new GuardarContenidoPane();
     
     
-    
+    GuardadoJson JSON = new GuardadoJson();
     
     /**
      * Initializes the controller class.
@@ -178,7 +182,7 @@ public class Pantalla2Controller implements Initializable {
             
             
             
-            escenaCompleta.getChildren().addAll(root1,imagenfull,dibujos,botonDibujar,botonIzqq,botonDerr,botonBorrar);// Se añade la pantalla de editar y la imagen del PDF
+            escenaCompleta.getChildren().addAll(root1,imagenfull,dibujos,botonDibujar,botonIzqq,botonDerr,botonBorrar,botonGuardar);// Se añade la pantalla de editar y la imagen del PDF
             Scene escene = new Scene(escenaCompleta,anchoPantalla*razon1, altoPantalla*razon2);//Se carga la escena completa en la escena que se mostrará
             
             
@@ -188,6 +192,8 @@ public class Pantalla2Controller implements Initializable {
             botonBorrar.setLayoutX(153);
             botonIzqq.setLayoutX(51);
             botonDerr.setLayoutX(102);
+            botonGuardar.setLayoutX(204);
+            
 
             final ToggleGroup GrupoBotones = new ToggleGroup();
            
@@ -214,6 +220,28 @@ public class Pantalla2Controller implements Initializable {
                     }
                 }
             });
+            //Cuando apretamos el boton guardar
+            botonGuardar.setOnAction((event) -> {
+                
+                FileChooser fileChooser = new FileChooser();
+ 
+                FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Json files (*.json)", "*.json"); //Filtramos por json
+                fileChooser.getExtensionFilters().add(extFilter); //Añadimos el filtro 
+
+                File file = fileChooser.showSaveDialog(stage); //Muestra la escena para guardar el archivo
+                
+                if (file != null) {
+                    JSON.crearJson(file.getPath(),guardados.getRectangulos()); //Generamos el json
+                }
+                
+                
+                
+            });
+            
+                    
+            
+            
+            
             //se añaden los botones al grupo que los contiene
             botonDibujar.setToggleGroup(GrupoBotones);
             botonBorrar.setToggleGroup(GrupoBotones);
@@ -376,6 +404,10 @@ public class Pantalla2Controller implements Initializable {
         Image imagenAdelante = new Image(new File("botonDer.png").toURI().toString(),35,36,false,true);
         ImageView iconoVolverAdelante = new ImageView(imagenAdelante);
         
+        Image imagenGuardar = new Image(new File("botonGuardar.png").toURI().toString(),35,36,false,true);
+        ImageView iconoGuardar = new ImageView(imagenGuardar);
+        
+        
         botonDibujar.setGraphic(iconoDibujar);
         botonDibujar.setStyle("-fx-base: white;");
 
@@ -387,6 +419,9 @@ public class Pantalla2Controller implements Initializable {
 
         botonBorrar.setGraphic(iconoBorrar);
         botonBorrar.setStyle("-fx-base: white;");
+        
+        botonGuardar.setGraphic(iconoGuardar);
+        botonGuardar.setStyle("-fx-base: white;");
         
     }
 
