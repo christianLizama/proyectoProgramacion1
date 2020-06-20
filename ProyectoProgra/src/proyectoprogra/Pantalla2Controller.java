@@ -8,7 +8,9 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -35,8 +37,12 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
+import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.Tesseract1;
+import net.sourceforge.tess4j.util.LoadLibs;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -55,6 +61,7 @@ public class Pantalla2Controller implements Initializable {
     ToggleButton botonBorrar = new ToggleButton();
     Button botonIzqq = new Button();
     Button botonDerr = new Button();
+    Button botonGuardar = new Button();
     
     //coordenadas de dibujo
     double xOffset = 0; 
@@ -107,8 +114,8 @@ public class Pantalla2Controller implements Initializable {
     GuardarContenidoPane guardados = new GuardarContenidoPane();
     
     
-    
-    
+    GuardadoJson JSON = new GuardadoJson();
+    OCR lectorOcr = new OCR();
     /**
      * Initializes the controller class.
      */
@@ -133,22 +140,26 @@ public class Pantalla2Controller implements Initializable {
                 //recorre todas las paginas que posea un pdf (en este caso se usaran pdf de una sola pag)
                 
                     //Numero de pagina, escala, tipo de imagen
-                    BufferedImage bim = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
-
+                    BufferedImage bim = pdfRenderer.renderImageWithDPI();
+                    
                     //Se guarda en la carpeta del proyecto el pdf convertido en imagen
                     File file = new File("imagen.png");
                     ImageIO.write(bim, "png", file);
+                    
+                    
+                    
                     File outputfile = new File("imagen.png");
+                    
                     ImageIO.write(bim, "png", outputfile);//Se crea el archivo
-
+                   
                     Image image = new Image(new File("imagen.png").toURI().toString());//Se carga la imagen
+                    
+                    lectorOcr.leerImagenEntera();
+                   
                     ImageView imagenPDF = new ImageView(image);//Se crea un archivo de tipo imageView para poder visualizar
 
                     //Se definen los tamaños de la imagen
-
                     cargadorDeEscena(imagenPDF);
-
-                
             
                 documento.close();
             
@@ -176,9 +187,7 @@ public class Pantalla2Controller implements Initializable {
 
             imagenPDF.setLayoutX(0);
             
-            
-            
-            escenaCompleta.getChildren().addAll(root1,imagenfull,dibujos,botonDibujar,botonIzqq,botonDerr,botonBorrar);// Se añade la pantalla de editar y la imagen del PDF
+            escenaCompleta.getChildren().addAll(root1,imagenfull,dibujos,botonDibujar,botonIzqq,botonDerr,botonBorrar,botonGuardar);// Se añade la pantalla de editar y la imagen del PDF
             Scene escene = new Scene(escenaCompleta,anchoPantalla*razon1, altoPantalla*razon2);//Se carga la escena completa en la escena que se mostrará
             
             
@@ -188,6 +197,8 @@ public class Pantalla2Controller implements Initializable {
             botonBorrar.setLayoutX(153);
             botonIzqq.setLayoutX(51);
             botonDerr.setLayoutX(102);
+            botonGuardar.setLayoutX(204);
+            
 
             final ToggleGroup GrupoBotones = new ToggleGroup();
            
@@ -214,6 +225,28 @@ public class Pantalla2Controller implements Initializable {
                     }
                 }
             });
+            //Cuando apretamos el boton guardar
+            botonGuardar.setOnAction((event) -> {
+                
+                FileChooser fileChooser = new FileChooser();
+ 
+                FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Json files (*.json)", "*.json"); //Filtramos por json
+                fileChooser.getExtensionFilters().add(extFilter); //Añadimos el filtro 
+
+                File file = fileChooser.showSaveDialog(stage); //Muestra la escena para guardar el archivo
+                
+                if (file != null) {
+                    JSON.crearJson(file.getPath(),guardados.getRectangulos()); //Generamos el json
+                }
+                
+                
+                
+            });
+            
+                    
+            
+            
+            
             //se añaden los botones al grupo que los contiene
             botonDibujar.setToggleGroup(GrupoBotones);
             botonBorrar.setToggleGroup(GrupoBotones);
@@ -376,6 +409,10 @@ public class Pantalla2Controller implements Initializable {
         Image imagenAdelante = new Image(new File("botonDer.png").toURI().toString(),35,36,false,true);
         ImageView iconoVolverAdelante = new ImageView(imagenAdelante);
         
+        Image imagenGuardar = new Image(new File("botonGuardar.png").toURI().toString(),35,36,false,true);
+        ImageView iconoGuardar = new ImageView(imagenGuardar);
+        
+        
         botonDibujar.setGraphic(iconoDibujar);
         botonDibujar.setStyle("-fx-base: white;");
 
@@ -387,6 +424,9 @@ public class Pantalla2Controller implements Initializable {
 
         botonBorrar.setGraphic(iconoBorrar);
         botonBorrar.setStyle("-fx-base: white;");
+        
+        botonGuardar.setGraphic(iconoGuardar);
+        botonGuardar.setStyle("-fx-base: white;");
         
     }
 
