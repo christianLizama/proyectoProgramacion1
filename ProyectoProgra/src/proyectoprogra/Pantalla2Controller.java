@@ -140,7 +140,7 @@ public class Pantalla2Controller implements Initializable {
                 //recorre todas las paginas que posea un pdf (en este caso se usaran pdf de una sola pag)
                 
                     //Numero de pagina, escala, tipo de imagen
-                    BufferedImage bim = pdfRenderer.renderImageWithDPI();
+                    BufferedImage bim = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
                     
                     //Se guarda en la carpeta del proyecto el pdf convertido en imagen
                     File file = new File("imagen.png");

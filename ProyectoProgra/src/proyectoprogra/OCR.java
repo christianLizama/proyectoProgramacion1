@@ -25,7 +25,7 @@ public class OCR {
         System.loadLibrary ("dll/liblept1744");
         System.loadLibrary ("dll/libtesseract3051");
         // TODO code application logic here
-        File imageFile = new File("imagen_0.png");
+        File imageFile = new File("imagen.png");
         
         ITesseract instance = new Tesseract();  // JNA Interface Mapping
         
