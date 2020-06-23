@@ -66,5 +66,17 @@ public class UndoAndRedo {
         return rectangulos;
     }
 
-    
+    //Se realiza en control Y retornando los rectangulos correspondientes
+    public ArrayList controlY(){
+        ArrayList rectangulos = new ArrayList();
+
+        if(!pilaY.isEmpty()){
+
+            PilaZ.push(pilaY.peek());
+
+            return pilaY.pop();
+
+        }
+        return rectangulos;
+    }
 }
