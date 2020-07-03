@@ -13,11 +13,20 @@ import javafx.scene.control.Button;
  */
 public class Rectangulos {
     
-    Button botonRectangulo;
+    Button botonRectangulo = new Button();
     double x;
     double y;
     double ancho;
     double alto;
+    int hacerPulsable;
+
+    public int getHacerPulsable() {
+        return hacerPulsable;
+    }
+
+    public void setHacerPulsable(int hacerVisible) {
+        this.hacerPulsable = hacerVisible;
+    }
    
     public double getAncho() {
         return ancho;
@@ -55,14 +64,21 @@ public class Rectangulos {
         return botonRectangulo;
     }
     
-    public void setBotonRectangulo(Button botonRectangulo) {
-        this.botonRectangulo = botonRectangulo;
+    //Hace que el boton deje de ser pulsable mientras se dibuja
+    //de esta forma evitamos el error al mover el mouse cerca
+    //cuando se termina de dibujar se habilita nuevamente
+    public void hacerPulsable(){
+        if(hacerPulsable==0){
+            botonRectangulo.setDisable(true);
+            botonRectangulo.setOpacity(100);
+        }
+        else{
+            botonRectangulo.setDisable(false);
+        }
+        
     }
-    
     //Se hace un set de todo lo del rectangulo
     public void setPosicionEnPantalla(){
-        Button nuevoRectangulo = new Button();
-        setBotonRectangulo(nuevoRectangulo);
         
         botonRectangulo.setLayoutX(x);
         botonRectangulo.setLayoutY(y);

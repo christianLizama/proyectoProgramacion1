@@ -9,19 +9,23 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 /**
  *
  * @author 56945
  */
+
+
+
 public class ProyectoProgra extends Application {
+    static Pane dibujos = new Pane();
     
     @Override
     public void start(Stage stage) throws Exception {
-       
+        dibujos.setLayoutY(45);
         Parent root = FXMLLoader.load(getClass().getResource("Pantalla1.fxml"));
-        
         Scene scene = new Scene(root);
         
         //stage.setTitle("S.E.I.A");
@@ -29,6 +33,7 @@ public class ProyectoProgra extends Application {
        
         stage.setScene(scene);
         stage.show();
+        
         
     }
 
