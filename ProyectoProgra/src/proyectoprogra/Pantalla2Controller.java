@@ -311,6 +311,19 @@ public class Pantalla2Controller implements Initializable{
                     
                     for (Button rectLeidos : rectAux) {
                         dibujos.getChildren().add(rectLeidos);
+                        ArrayList<Button> rectangulosAux = new ArrayList<>();
+                        dibujos.setVisible(true);
+                        estados.pilaY.clear();
+                        //Se agregan al arraylist todos los dibujos creados
+                        for (int i = 0; i < dibujos.getChildren().size(); i++) {
+                            rectangulosAux.add((Button)dibujos.getChildren().get(i));
+                        }
+
+                        guardados.setRectangulos(rectangulosAux);
+
+                        //Se agrega el estado del programa a la pila
+                        estados.agregarPila(guardados);
+                        System.out.println(dibujos.getChildren().size());
                         
                         
                     }
