@@ -8,13 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-<<<<<<< HEAD
-    <jar href="ProyectoProgra.jar" size="22897" download="eager" />
-    <jar href="lib\commons-logging-1.2.jar" size="61829" download="eager" />
-    <jar href="lib\fontbox-2.0.19.jar" size="1561265" download="eager" />
-    <jar href="lib\gson-2.8.6.jar" size="240255" download="eager" />
-=======
-    <jar href="ProyectoProgra.jar" size="6041931" download="eager" />
+    <jar href="ProyectoProgra.jar" size="6044840" download="eager" />
     <jar href="lib\commons-beanutils-1.9.2.jar" size="233857" download="eager" />
     <jar href="lib\commons-io-2.6.jar" size="214788" download="eager" />
     <jar href="lib\commons-logging-1.2.jar" size="61829" download="eager" />
@@ -35,7 +29,6 @@
     <jar href="lib\log4j-over-slf4j-1.7.25.jar" size="23645" download="eager" />
     <jar href="lib\logback-classic-1.2.3.jar" size="290339" download="eager" />
     <jar href="lib\logback-core-1.2.3.jar" size="471901" download="eager" />
->>>>>>> Pruebas
     <jar href="lib\pdfbox-2.0.19.jar" size="2715618" download="eager" />
     <jar href="lib\pdfbox-tools-2.0.9.jar" size="72361" download="eager" />
     <jar href="lib\slf4j-api-1.7.25.jar" size="41203" download="eager" />
