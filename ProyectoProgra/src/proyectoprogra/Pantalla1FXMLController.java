@@ -75,6 +75,7 @@ public class Pantalla1FXMLController implements Initializable {
             if(pdfFile != null){
                 nombrePDF.setText(pdfFile.getName());
                 botonCargar(pantalla2, pdfFile);
+                event.consume();
             }
         });
     }
@@ -86,8 +87,7 @@ public class Pantalla1FXMLController implements Initializable {
             
             ((Node) (event.getSource())).getScene().getWindow().hide();//cerrar ventana
             pantalla2.PDF2Imagen(pdfFile);
-            
-            
+            event.consume();
         });
             
     }

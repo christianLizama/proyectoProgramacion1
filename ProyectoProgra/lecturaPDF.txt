@@ -1,0 +1,20 @@
+Requisitos 2020-I 20-mayo
+Caso de Estudio: Kobold Fight Club (Kobold Encounter Calculator)
+
+No todos los casos que se estudian en el mundo real tienen que ver con situaciones o narraciones
+de clientes; en algunos casos pueden solicitarles ”crear el nuevo Uber", o ”copiar la página de PC
+Factory". Esta es una de esas situaciones.
+
+El cliente, un tipo sospechoso con sobrepeso y un gorro fedora, Ies indica, haciendo gestos
+exagerados con las manos mientras bebe ocasionalmente de una botella de Pepsi y come Cheetos
+limpiando sus dedos en una polera negra de Metallica, que ”éste es el futuro de Iosjuegos de mesa",
+y que "no entiende por qué nadie lo ha hecho aquí, en Curicó". Sin dar más explicaciones, les ha
+solicitado hacer un análisis de la página web ”Kobold Fight Club", que según él traerá grandes
+ganancias para su empresa.
+
+Ustedes deben hacer un levantamiento de requisitos de usuario y sistema de dicha página, con sus
+respectivos diagramas de Casos de Uso (NO + N1), y de Secuencia. Para este último, considerar sólo
+los procesos generales, para que las cosas no se salgan de control (es decir, no mucho detalle).
+
+El link: httgs:¿¿kobold.club¿fight¿$—t¿encounter—buílder
+

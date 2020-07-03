@@ -4,14 +4,17 @@
  * and open the template in the editor.
  */
 package proyectoprogra;
+import com.google.gson.GsonBuilder;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -26,9 +29,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -40,6 +45,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
+import jdk.nashorn.internal.objects.NativeArray;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -51,7 +57,7 @@ import org.apache.pdfbox.rendering.PDFRenderer;
  *
  * @author Diego Aguilera
  */
-public class Pantalla2Controller implements Initializable {
+public class Pantalla2Controller implements Initializable{
     
     //botones del programa
     ToggleButton botonDibujar = new ToggleButton();
@@ -59,14 +65,17 @@ public class Pantalla2Controller implements Initializable {
     Button botonIzqq = new Button();
     Button botonDerr = new Button();
     Button botonGuardar = new Button();
+    Button botonLeer = new Button();
+    
     
     //coordenadas de dibujo
     double xOffset = 0; 
     double yOffset = 0;
     double origenX=0;
     double origenY=0;
-    
-    
+    int contador=0;
+    GsonBuilder gsonBuilder = new GsonBuilder();
+    Stage stage = new Stage();//Se crea el Escenario
     
     @FXML
     private AnchorPane ventanaPDF;
@@ -103,7 +112,7 @@ public class Pantalla2Controller implements Initializable {
     double altoPantalla = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
     double razon1 = 0.4;
     double razon2 = 0.9;
-            
+    
    
     //Rectangulos
     Rectangulos rectangulo;
@@ -112,16 +121,19 @@ public class Pantalla2Controller implements Initializable {
     
     
     GuardadoJson JSON = new GuardadoJson();
-    
+    OCR lectorOcr = new OCR();
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-      
+        
+        
+        
       
     }
+
     
     public void PDF2Imagen(File pdfFile) {
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -136,23 +148,25 @@ public class Pantalla2Controller implements Initializable {
                 PDFRenderer pdfRenderer = new PDFRenderer(documento);
                 //recorre todas las paginas que posea un pdf (en este caso se usaran pdf de una sola pag)
                 
-                    //Numero de pagina, escala, tipo de imagen
-                    BufferedImage bim = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
+                //Numero de pagina, escala, tipo de imagen
+                BufferedImage bim = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
 
-                    //Se guarda en la carpeta del proyecto el pdf convertido en imagen
-                    File file = new File("imagen.png");
-                    ImageIO.write(bim, "png", file);
-                    File outputfile = new File("imagen.png");
-                    ImageIO.write(bim, "png", outputfile);//Se crea el archivo
+                //Se guarda en la carpeta del proyecto el pdf convertido en imagen
+                File file = new File("imagen.png");
+                ImageIO.write(bim, "png", file);
 
-                    Image image = new Image(new File("imagen.png").toURI().toString());//Se carga la imagen
-                    ImageView imagenPDF = new ImageView(image);//Se crea un archivo de tipo imageView para poder visualizar
+                File outputfile = new File("imagen.png");
 
-                    //Se definen los tamaños de la imagen
+                ImageIO.write(bim, "png", outputfile);//Se crea el archivo
 
-                    cargadorDeEscena(imagenPDF);
+                Image image = new Image(new File("imagen.png").toURI().toString());//Se carga la imagen
 
-                
+                lectorOcr.leerImagenEntera();
+
+                ImageView imagenPDF = new ImageView(image);//Se crea un archivo de tipo imageView para poder visualizar
+
+                //Se definen los tamaños de la imagen
+                cargadorDeEscena(imagenPDF);
             
                 documento.close();
             
@@ -165,35 +179,42 @@ public class Pantalla2Controller implements Initializable {
     public void cargadorDeEscena (ImageView imagenPDF) {
         
         try {
-            Stage stage = new Stage();//Se crea el Escenario
 
             //Se carga el archivo fxml en un parent
             Parent root1 = FXMLLoader.load(getClass().getResource("Pantalla2.fxml"));//La pantalla 2
-
+            
+            //ProyectoProgra.dibujos.getChildren().add(imagenPDF);
+            
             setImagenesBotones();
             //contenedor de imagen
-            Pane imagenfull = new Pane();
+            Pane imagenFull= new Pane();
             
-            imagenfull.getChildren().add(imagenPDF);
-            imagenfull.setLayoutY(45);
-            imagenfull.setLayoutX(0);
+            TextArea ocr = new TextArea();
+            ocr = lectorOcr.getTextoOCR();
+            ocr.setLayoutX((anchoPantalla*razon1)+10);
+            ocr.setLayoutY(45);
+            ocr.setPrefSize(anchoPantalla*razon1, altoPantalla*razon2);
+            
+            imagenFull.getChildren().add(imagenPDF);
+            imagenFull.setLayoutY(45);
+            dibujos = ProyectoProgra.dibujos;
 
+            
             imagenPDF.setLayoutX(0);
             
+            escenaCompleta.getChildren().addAll(root1,imagenFull,dibujos,ocr,botonDibujar,botonIzqq,botonDerr,botonBorrar,botonGuardar,botonLeer);// Se añade la pantalla de editar y la imagen del PDF
+            Scene escene = new Scene(escenaCompleta,(anchoPantalla*razon1)*2, altoPantalla*razon2);//Se carga la escena completa en la escena que se mostrará
             
-            
-            escenaCompleta.getChildren().addAll(root1,imagenfull,dibujos,botonDibujar,botonIzqq,botonDerr,botonBorrar,botonGuardar);// Se añade la pantalla de editar y la imagen del PDF
-            Scene escene = new Scene(escenaCompleta,anchoPantalla*razon1, altoPantalla*razon2);//Se carga la escena completa en la escena que se mostrará
-            
-            
-            imagenPDF.setFitHeight(escene.getHeight()-45);
-            imagenPDF.setFitWidth(escene.getWidth());
-
+            imagenPDF.setFitHeight(altoPantalla*razon2);
+            imagenPDF.setFitWidth(anchoPantalla*razon1);
+            imagenFull.setPrefSize(imagenPDF.getFitWidth(), imagenPDF.getFitHeight());
+            ProyectoProgra.dibujos.setPrefSize(imagenPDF.getFitWidth(), imagenPDF.getFitHeight());
+            dibujos.setLayoutY(45);
             botonBorrar.setLayoutX(153);
             botonIzqq.setLayoutX(51);
             botonDerr.setLayoutX(102);
             botonGuardar.setLayoutX(204);
-            
+            botonLeer.setLayoutX(255);
 
             final ToggleGroup GrupoBotones = new ToggleGroup();
            
@@ -211,12 +232,14 @@ public class Pantalla2Controller implements Initializable {
                     //al tener el boton dibujar pulsado se permite dibujar
                     if(botonDibujar.isSelected()){
                         //System.out.println("Se ha pulsado el boton dibujar");
-                        dibujarRectangulos();
+                        //dibujarRectangulos();
+                        
+                        dibujar2(dibujos);
+                        //coordenadas(dibujos);
                     }
                     //si el boton dibujar no se encuentra pulsado no se permite obtener coordenadas
                     else if(!botonDibujar.isPressed()){
-                        escenaCompleta.setOnMouseClicked(null);
-                        escenaCompleta.setOnMousePressed(null);
+                        dibujos.setOnMousePressed(null);
                     }
                 }
             });
@@ -232,15 +255,15 @@ public class Pantalla2Controller implements Initializable {
                 
                 if (file != null) {
                     JSON.crearJson(file.getPath(),guardados.getRectangulos()); //Generamos el json
+                   
                 }
-                
-                
                 
             });
             
-                    
-            
-            
+            //Se añade la funcion del boton para leer json
+            leerPlantilla();
+            pulsarBotonAtras();
+            pulsarBotonAdelante();
             
             //se añaden los botones al grupo que los contiene
             botonDibujar.setToggleGroup(GrupoBotones);
@@ -257,6 +280,63 @@ public class Pantalla2Controller implements Initializable {
             Logger.getLogger(Pantalla1FXMLController.class.getName()).log(Level.SEVERE, null, ex);
         }
  
+    }
+    
+    //Se lee una plantilla creada
+    public void leerPlantilla(){
+        //Cuando apretamos el boton Leer
+            botonLeer.setOnAction((event) -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Buscar JSON");
+
+                // Agregar filtros para facilitar la busqueda
+                fileChooser.getExtensionFilters().addAll(
+                        new FileChooser.ExtensionFilter("json", "*.json")
+                );
+                
+                // Obtener pdf seleccionado
+                File jsonFile = fileChooser.showOpenDialog(null);
+               
+                if(jsonFile != null){
+                    JSON.leerJson(jsonFile);
+                    
+                    
+                    System.out.println(jsonFile.getName());
+                    
+                    ArrayList<Button> rectAux =JSON.getRectangulosLeidos();
+                    
+                    System.out.println("primer aux: " + rectAux.size());
+                    
+                    dibujos.getChildren().clear();
+                    
+                    for (Button rectLeidos : rectAux) {
+                        dibujos.getChildren().add(rectLeidos);
+                        ArrayList<Button> rectangulosAux = new ArrayList<>();
+                        dibujos.setVisible(true);
+                        estados.pilaY.clear();
+                        //Se agregan al arraylist todos los dibujos creados
+                        for (int i = 0; i < dibujos.getChildren().size(); i++) {
+                            rectangulosAux.add((Button)dibujos.getChildren().get(i));
+                        }
+
+                        guardados.setRectangulos(rectangulosAux);
+
+                        //Se agrega el estado del programa a la pila
+                        estados.agregarPila(guardados);
+                        System.out.println(dibujos.getChildren().size());
+                        
+                        
+                    }
+                    rectAux.clear();
+                    
+                    
+                    
+                    
+                }
+                
+            });
+        
+        
     }
     
     //Funcion que permite dibujar rectangulos
@@ -360,6 +440,155 @@ public class Pantalla2Controller implements Initializable {
         });
     }
     
+    double ancho1;
+    double alto1;
+    
+    public void dibujar2(Pane dibujos){
+        
+        dibujos.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                dibujos.setVisible(true);
+                dibujos.setDisable(false);
+                origenX = event.getX();
+                origenY = event.getY();
+                
+                System.out.println("origen x:"+origenX);
+                System.out.println("origen y:"+origenY);
+                
+                contador++;
+                
+                String rectanguloN= "rectangulo "+contador;
+                System.out.println(rectanguloN);
+                Tooltip nombre = new Tooltip();
+                
+                nombre.setText(rectanguloN);
+                
+                rectangulo = new Rectangulos();
+                rectangulo.setX(origenX);
+                rectangulo.setY(origenY);
+                
+                //Creamos un boton el cual se mostrará en pantalla
+                Button nuevo = new Button();
+                nuevo = rectangulo.getBotonRectangulo();
+                rectangulo.setHacerPulsable(0);
+                rectangulo.hacerPulsable();
+                nuevo.setTooltip(nombre);
+                //Se agrega el rectangulo al contenedor de dibujos
+                dibujos.getChildren().add(nuevo);
+                
+                //Hacemos un set de su posición inicial en pantalla
+                rectangulo.setPosicionEnPantalla();
+                dibujos.setOnMousePressed(null);
+                
+                dibujos.setOnMouseMoved(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        //X e Y en movimiento
+//                        System.out.println("x: "+event.getSceneX());
+//                        System.out.println("y: "+event.getSceneY());
+                        
+                        xOffset=event.getX();
+                        yOffset=event.getY();
+
+                        ancho1=xOffset-origenX;
+                        alto1=yOffset-origenY;
+                        
+                        //System.out.println("ancho: "+ancho);
+                        //System.out.println("alto: "+alto);
+//                        
+//                        if(ancho<0 && alto>0){
+//                            
+//                            ancho=origenX-xOffset;
+//                            alto= yOffset-origenY;
+//                            
+//                            boton.setLayoutX(xOffset);
+//                            //boton.setLayoutY(yOffset);
+//                            
+//                        }
+//                        else if(ancho<0 && alto<0){
+//                            
+//                            ancho=origenX-xOffset;
+//                            alto=origenY-yOffset;
+//                            
+//                            boton.setLayoutY(yOffset);
+//                            boton.setLayoutX(xOffset);
+//                            
+//                        }
+//                        else if(alto<0 && ancho>0){
+//                            
+//                            ancho=xOffset-origenX;
+//                            alto=origenY-yOffset;
+//                            
+//                            boton.setLayoutY(yOffset);
+//                            
+//                        }
+                        
+                        //System.out.println("");
+                        
+                        //Hacemos un set del alto y ancho que es variable hasta
+                        //que se haga un click de termino
+                        rectangulo.setAlto(alto1);
+                        rectangulo.setAncho(ancho1);
+                        rectangulo.setPosicionEnPantalla();
+                        
+                        dibujos.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent event) {
+                                rectangulo.setHacerPulsable(1);
+                                rectangulo.hacerPulsable();
+                                dibujos.setOnMouseMoved(null);
+                                dibujos.setOnMousePressed(null);
+                                dibujos.setOnMouseClicked(null);
+                                
+                                //Reiniciamos las variables para crear otro
+                                ancho1=0;
+                                alto1=0;
+                                xOffset=0;
+                                yOffset=0;
+                                
+                                //Creamos un arraylist el cual servira para guardar todos los rectangulos creados
+                                ArrayList<Button> rectangulosAux = new ArrayList<>();
+                                
+                                
+                                estados.pilaY.clear();
+                                //Se agregan al arraylist todos los dibujos creados
+                                for (int i = 0; i < dibujos.getChildren().size(); i++) {
+                                    rectangulosAux.add((Button)dibujos.getChildren().get(i));
+                                }
+
+                                guardados.setRectangulos(rectangulosAux);
+
+                                //Se agrega el estado del programa a la pila
+                                estados.agregarPila(guardados);
+                                estados.imprimir();
+                                
+//                                System.out.println("medidas rectangulo");
+//                                System.out.println("x: " + boton.getLayoutX());
+//                                System.out.println("y: " + boton.getLayoutY());
+//                                System.out.println("width: "+boton.getWidth());
+//                                System.out.println("height: "+boton.getHeight());
+                                event.consume();
+                                dibujar2(dibujos);
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+    
+    public void coordenadas(Pane root){
+        root.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println("x: "+event.getX());
+                System.out.println("y: "+ event.getY());
+            }
+        });
+        
+    }
+    
     //metodo que elimina rectangulos
     public void eliminarRectangulo (){
         for (int i = 0; i < dibujos.getChildren().size(); i++) { //se recorre la lista de botones
@@ -407,6 +636,9 @@ public class Pantalla2Controller implements Initializable {
         Image imagenGuardar = new Image(new File("botonGuardar.png").toURI().toString(),35,36,false,true);
         ImageView iconoGuardar = new ImageView(imagenGuardar);
         
+        Image imagenLeer = new Image(new File("botonLeer.png").toURI().toString(),35,36,false,true);
+        ImageView iconoLeer = new ImageView(imagenLeer);
+        
         
         botonDibujar.setGraphic(iconoDibujar);
         botonDibujar.setStyle("-fx-base: white;");
@@ -423,59 +655,129 @@ public class Pantalla2Controller implements Initializable {
         botonGuardar.setGraphic(iconoGuardar);
         botonGuardar.setStyle("-fx-base: white;");
         
+        botonLeer.setGraphic(iconoLeer);
+        botonLeer.setStyle("-fx-base: white;");
+        
     }
+    
+    public void pulsarBotonAtras(){
+        
+        botonIzqq.setOnAction((event) -> {
+            
+            funcionZ();
+            
+        });
+        
+    }
+    
+    public void pulsarBotonAdelante(){
+        
+        botonDerr.setOnAction((event) -> {
+            
+            funcionY();
+            
+        });
+        
+    }
+    
+    public void funcionZ(){
+        
+        System.out.println("Se ha usado control Z");
+        //ArrayList que almacena los rectangulos del estado anterior
+        ArrayList rectangulosAux;
+        rectangulosAux = estados.controlZ();//se cargan los rectangulos del estado anterior
 
+        if(dibujos.getChildren().size()==1){//si solo existe un rectangulo se elimina y se actualiza la ventana
+
+            //dibujos.getChildren().clear();//se eliminan todos los rectangulos
+            dibujos.getChildren().remove(0);
+            Button arreglo = new Button();
+            arreglo.setPrefSize(30, 40);
+
+            dibujos.getChildren().add(arreglo);
+
+            dibujos.getChildren().remove(0);
+            //Creamos un arraylist el cual servira para guardar todos los rectangulos creados
+            ArrayList<Button> rectangulosNew = new ArrayList<>();
+
+            //Se agregan al arraylist todos los dibujos creados
+            for (int i = 0; i < dibujos.getChildren().size(); i++) {
+                rectangulosNew.add((Button)dibujos.getChildren().get(i));
+            }
+            guardados.setRectangulos(rectangulosNew);
+
+
+        }
+        else{
+
+            if(!rectangulosAux.isEmpty()){
+
+                dibujos.getChildren().clear();
+
+                for (int i = 0; i <rectangulosAux.size(); i++){//Agregamos los rectangulos anteriores al Pane de dibujos
+                   dibujos.getChildren().add((Button)rectangulosAux.get(i));
+                }
+
+                //Creamos un arraylist el cual servira para guardar todos los rectangulos creados
+                ArrayList<Button> rectangulosNew = new ArrayList<>();
+
+                //Se agregan al arraylist todos los dibujos creados
+                for (int i = 0; i < dibujos.getChildren().size(); i++) {
+                    rectangulosNew.add((Button)dibujos.getChildren().get(i));
+                }
+                guardados.setRectangulos(rectangulosNew);
+            }
+        }
+        
+    }
+    public void funcionY(){
+        
+        System.out.println("Se ha pulsado control Y");
+        
+        ArrayList rectangulosAux2;//Se almacenan los rectangulos que se extraen de control z
+
+        rectangulosAux2 = estados.controlY();//se carga el arraylist 
+
+        if(!rectangulosAux2.isEmpty()){
+
+            dibujos.setVisible(true);
+            dibujos.getChildren().clear();
+
+            for (int i = 0; i <rectangulosAux2.size(); i++) {
+               dibujos.getChildren().add((Button)rectangulosAux2.get(i));
+            }
+
+            //Creamos un arraylist el cual servira para guardar todos los rectangulos creados
+            ArrayList<Button> rectangulosNew = new ArrayList<>();
+
+            //Se agregan al arraylist todos los dibujos creados
+            for (int i = 0; i < dibujos.getChildren().size(); i++) {
+                rectangulosNew.add((Button)dibujos.getChildren().get(i));
+            }
+            guardados.setRectangulos(rectangulosNew);
+        }
+        
+    }
+    
+    
+    
+    
+    
     
     public  void addKeyHandler(Scene scene) {
         
         scene.setOnKeyPressed((event) -> {
             //control Z
             if (controlZ.match(event)) {
-                event.consume(); 
                 
-                System.out.println("Se ha usado control Z");
-                //ArrayList que almacena los rectangulos del estado anterior
-                ArrayList rectangulosAux;
-                rectangulosAux = estados.controlZ();//se cargan los rectangulos del estado anterior
-                
-                if(dibujos.getChildren().size()==1){//si solo existe un rectangulo se elimina y se actualiza la ventana
-                    
-                    dibujos.getChildren().clear();//se eliminan todos los rectangulos
-                    dibujos.setVisible(false);
-                    
-                }
-                else{
-                    
-                    if(!rectangulosAux.isEmpty()){
-                        
-                        dibujos.getChildren().clear();
-                        
-                        for (int i = 0; i <rectangulosAux.size(); i++){//Agregamos los rectangulos anteriores al Pane de dibujos
-                           dibujos.getChildren().add((Button)rectangulosAux.get(i));
-                        }
-                    }
-                }
+                funcionZ();
+                event.consume();
             }
             //control Y
             if(controly.match(event)){
+                funcionY();
                 event.consume();
-                System.out.println("Se ha pulsado control Y");
-
-                ArrayList rectangulosAux2;//Se almacenan los rectangulos que se extraen de control z
-
-                rectangulosAux2 = estados.controlY();//se carga el arraylist 
-
-                if(!rectangulosAux2.isEmpty()){
-
-                    dibujos.setVisible(true);
-                    dibujos.getChildren().clear();
-
-                    for (int i = 0; i <rectangulosAux2.size(); i++) {
-                       dibujos.getChildren().add((Button)rectangulosAux2.get(i));
-                    }
-                }
-             }
-          
+            }
         });
-    }    
+    }
 }
