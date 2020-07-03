@@ -3,12 +3,22 @@ package proyectoprogra;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import java.awt.Rectangle;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Button;
 
 /**
@@ -17,9 +27,12 @@ import javafx.scene.control.Button;
  */
 public class GuardadoJson {
     
-    
     ArrayList<Rectangle> rectangulos = new ArrayList<>();
-    
+    ArrayList<Button> rectangulosLeidos = new ArrayList<>();
+
+    public ArrayList<Button> getRectangulosLeidos() {
+        return rectangulosLeidos;
+    }
     
     public void crearJson(String nombreArchivo, ArrayList rectangulosBotones){
         try {
@@ -56,6 +69,62 @@ public class GuardadoJson {
         }
         
     }
+    
+    public void leerJson(File jsonFile){
+        
+        try {
+            //Se lee el archivo 
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(jsonFile.getPath()));
+            //creamos un gson para luego transformar el archivo en tipo json
+            Gson gson2 = new Gson();
+            //guardamos en un objeto el archivo convertido en json
+            Object jsonLeido = gson2.fromJson(bufferedReader, Object.class);
+            //creamos un String para convertir nuevamente el json en una cadena
+            String jsonRectangulosLeidos = gson2.toJson(jsonLeido);
+            //creamos un parser para convertir de array a jsonElement
+            JsonParser parser = new JsonParser();
+            //Hacemos el parse
+            JsonElement datos = parser.parse(jsonRectangulosLeidos);
+            bufferedReader.close();
+
+            //obtenemos el tipo de variable que en este casos seria un arraylist de Tipo Rectangle
+            //con esto podemos leer cada rectangulo creado con el json y cargarlo en un nuevo arraylist
+            Type type = new TypeToken<ArrayList<Rectangle>>() {
+            }.getType();
+
+            //cargamos la planilla del usuario en un nuevo arraylist
+            ArrayList<Rectangle> inpList = new Gson().fromJson(datos, type);
+
+//            System.out.println("x: "+inpList.get(0).getX());
+//            System.out.println("y: "+inpList.get(0).getY());
+//            System.out.println("widh: "+inpList.get(0).getWidth());
+//            System.out.println("height: "+inpList.get(0).getHeight());
+            convertirRectangulos(inpList);
+            
+        } catch (FileNotFoundException fileNotFound) {
+            System.out.println("No se ha encontrado el archivo");
+            
+        } catch (IOException ex) {
+            Logger.getLogger(GuardadoJson.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    
+    public void convertirRectangulos(ArrayList<Rectangle> rectangulos){
+        
+        for (Rectangle rectangulo : rectangulos) {
+            Button botonRectangulo = new Button();
+            botonRectangulo.setLayoutX(rectangulo.getX());
+            botonRectangulo.setLayoutY(rectangulo.getY());
+            botonRectangulo.setPrefSize(rectangulo.getWidth(),rectangulo.getHeight());
+            botonRectangulo.setMinSize(botonRectangulo.USE_PREF_SIZE,botonRectangulo.USE_PREF_SIZE);
+            botonRectangulo.setStyle("-fx-background-color: transparent;-fx-border-color:black;");
+            rectangulosLeidos.add(botonRectangulo);
+        }
+        
+        
+    }
+    
     
     
 }
