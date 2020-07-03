@@ -9,6 +9,7 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import javafx.scene.control.TextArea;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -18,6 +19,26 @@ import net.sourceforge.tess4j.TesseractException;
  * @author sebas
  */
 public class OCR {
+    TextArea textoOCR;
+    String resultado;
+
+    public TextArea getTextoOCR() {
+        return textoOCR;
+    }
+
+    public void setTextoOCR(TextArea textoOCR) {
+        this.textoOCR = textoOCR;
+    }
+
+    public String getResultado() {
+        return resultado;
+    }
+
+    public void setResultado(String resultado) {
+        this.resultado = resultado;
+    }
+    
+    
     
     
     public void leerImagenEntera(){
@@ -25,7 +46,7 @@ public class OCR {
         System.loadLibrary ("dll/liblept1744");
         System.loadLibrary ("dll/libtesseract3051");
         // TODO code application logic here
-        File imageFile = new File("imagen_0.png");
+        File imageFile = new File("imagen.png");
         
         ITesseract instance = new Tesseract();  // JNA Interface Mapping
         
@@ -36,7 +57,14 @@ public class OCR {
             
             String result = instance.doOCR(imageFile);
             guardarEnTXT(result);
-            System.out.println(result);
+            
+            setResultado(result);
+            TextArea agregado = new TextArea(resultado);
+            
+            setTextoOCR(agregado);
+            
+            
+            //System.out.println(result);
         } catch (TesseractException e) {
             System.err.println(e.getMessage());
         }
