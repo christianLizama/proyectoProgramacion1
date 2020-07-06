@@ -1,20 +1,21 @@
-Reqwsims zozo-u 20-maya
-Caso de Estudio: Kobold Fight Club (Kobold Encounter Calculator)
+UTAL — Requisitos de Software 2020-I
+Caso: Gestion de reservas de billetes de av¡on
 
-No (ados las casas … se estudian en 51 …… ram …en … … … ……nes a narracmnes
-de chenles, en algunos :asox pueden soh:|larles ”crear el nuevo unen”, a “:owar Ia pá(ma de Pc
-Fa(mnf' ma es … de esasxlmamones.
+La compañía de transporte de pasajeros U.N Squadron desea desarrollar una aplicación de
+reservas de billetes para vuelos nacionales e internacionales. Cada vuelo tiene plazas con
+distintas tarifas: primera clase, clase bussiness, y clase turista, que los potenciales pasajeros
+(de cuya gestión se encarga otra aplicación) pueden escoger. La página de reservas debe
+mostrar los vuelos con las plazas disponibles para cada tipo de tarifa, y los pasajeros pueden
+elegir cuáles plazas reservar.
 
-su cliente, .… upo sospechosº con sºbrepeso y un gorvo fee… le; ¡mira, haciendº 29510;
-exagevadas … Ias …… …una; beba acas¡onaameme de … bote… de Penal y come cheems
-hmmando sus dedosen una …… nena de Mamma, que”éx(e esel m…… delos )uegoxde mesa“,
-v que “no ennende Por que nadve lo ha hecho aquí, en cunoó". s… dav más expll(acmnes, les ha
-xolwcmado hacer un anáhsis de Ia págna web "Kob01d ;… Club". que según el traerá grandes
-gan…as para su emvvesa
+Si todas las plazas de vuelo y una tarifa determinada han sido reservadas, pero no
+compradas, la reserva actual se anota en una lista de espera, en caso algún otro cliente
+cancele su reserva. Las reservas se mantienen hasta 15 días antes del vuelo, por lo que antes
+de ello el cliente debe hacer efectiva la reserva comprando el billete, o perder la reserva.
 
-Ustedes deben hacer … Ievan(amwenlo de veu…sums de …… y 5|slema de am …… … sus
-respectivos diagramasue Caxox de uso (ND . mb, y de Secuenua ?… Esta última, :onsiderarsólu
-los pm::503 generales, vara que ha cosas …; se salgan de …me (Esdezir, no mucho delal1e)
-
-a Wink: hltgs:[[kabold =…b¿|¡gm¿n¿enm.…cermuaer
+Las plazas no vendidas y no compradas deben ofrecerse a los clientes en lista de espera,
+priorizando a los clientes en lista de espera que tengan reservas 0 compras en el mismo
+vuelo. Un billete vendido también puede devolverse, siempre que sea 15 antes de la fecha
+de este. La compañía también desea saber por cada vuelo y tarifa el grado de ocupación,
+plazas vendidas, en lista de espera.
 
