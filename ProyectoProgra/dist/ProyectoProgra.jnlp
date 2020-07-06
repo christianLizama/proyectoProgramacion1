@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="ProyectoProgra.jar" size="6044840" download="eager" />
+    <jar href="ProyectoProgra.jar" size="6041365" download="eager" />
     <jar href="lib\commons-beanutils-1.9.2.jar" size="233857" download="eager" />
     <jar href="lib\commons-io-2.6.jar" size="214788" download="eager" />
     <jar href="lib\commons-logging-1.2.jar" size="61829" download="eager" />
