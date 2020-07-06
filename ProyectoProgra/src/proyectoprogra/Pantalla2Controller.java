@@ -323,6 +323,7 @@ public class Pantalla2Controller implements Initializable{
             System.out.println("Se ha eliminado el archivo: "+jsonFile.getPath());
             //se deshabilita el boton eliminar ya que no hay plantilla guardada
             estaSeguro.setDisable(true);
+            dibujos.getChildren().clear(); //Para limpiar la pantalla
         }
         
     }
