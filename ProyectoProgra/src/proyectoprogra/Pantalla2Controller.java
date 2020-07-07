@@ -28,7 +28,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
@@ -66,7 +69,7 @@ public class Pantalla2Controller implements Initializable{
     Button botonDerr = new Button();
     Button botonGuardar = new Button();
     Button botonLeer = new Button();
-    
+    Button estaSeguro = new Button();
     
     //coordenadas de dibujo
     double xOffset = 0; 
@@ -202,7 +205,13 @@ public class Pantalla2Controller implements Initializable{
             
             imagenPDF.setLayoutX(0);
             
-            escenaCompleta.getChildren().addAll(root1,imagenFull,dibujos,ocr,botonDibujar,botonIzqq,botonDerr,botonBorrar,botonGuardar,botonLeer);// Se añade la pantalla de editar y la imagen del PDF
+            
+            
+            
+            estaSeguro.setLayoutX(306);
+            
+            
+            escenaCompleta.getChildren().addAll(root1,imagenFull,dibujos,ocr,botonDibujar,botonIzqq,botonDerr,botonBorrar,botonGuardar,botonLeer,estaSeguro);// Se añade la pantalla de editar y la imagen del PDF
             Scene escene = new Scene(escenaCompleta,(anchoPantalla*razon1)*2, altoPantalla*razon2);//Se carga la escena completa en la escena que se mostrará
             
             imagenPDF.setFitHeight(altoPantalla*razon2);
@@ -243,26 +252,14 @@ public class Pantalla2Controller implements Initializable{
                     }
                 }
             });
-            //Cuando apretamos el boton guardar
-            botonGuardar.setOnAction((event) -> {
-                
-                FileChooser fileChooser = new FileChooser();
- 
-                FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Json files (*.json)", "*.json"); //Filtramos por json
-                fileChooser.getExtensionFilters().add(extFilter); //Añadimos el filtro 
-
-                File file = fileChooser.showSaveDialog(stage); //Muestra la escena para guardar el archivo
-                
-                if (file != null) {
-                    JSON.crearJson(file.getPath(),guardados.getRectangulos()); //Generamos el json
-                   
-                }
-                
-            });
             
+            //Se añade la funcion de guardar una plantilla
+            guardarPlantillaJson();
             //Se añade la funcion del boton para leer json
             leerPlantilla();
+            //Se añade la funcion de control z en el boton
             pulsarBotonAtras();
+            //Se añade la funcion de control y en el boton
             pulsarBotonAdelante();
             
             //se añaden los botones al grupo que los contiene
@@ -282,163 +279,213 @@ public class Pantalla2Controller implements Initializable{
  
     }
     
-    //Se lee una plantilla creada
-    public void leerPlantilla(){
-        //Cuando apretamos el boton Leer
-            botonLeer.setOnAction((event) -> {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Buscar JSON");
-
-                // Agregar filtros para facilitar la busqueda
-                fileChooser.getExtensionFilters().addAll(
-                        new FileChooser.ExtensionFilter("json", "*.json")
-                );
-                
-                // Obtener pdf seleccionado
-                File jsonFile = fileChooser.showOpenDialog(null);
-               
-                if(jsonFile != null){
-                    JSON.leerJson(jsonFile);
-                    
-                    
-                    System.out.println(jsonFile.getName());
-                    
-                    ArrayList<Button> rectAux =JSON.getRectangulosLeidos();
-                    
-                    System.out.println("primer aux: " + rectAux.size());
-                    
-                    dibujos.getChildren().clear();
-                    
-                    for (Button rectLeidos : rectAux) {
-                        dibujos.getChildren().add(rectLeidos);
-                        ArrayList<Button> rectangulosAux = new ArrayList<>();
-                        dibujos.setVisible(true);
-                        estados.pilaY.clear();
-                        //Se agregan al arraylist todos los dibujos creados
-                        for (int i = 0; i < dibujos.getChildren().size(); i++) {
-                            rectangulosAux.add((Button)dibujos.getChildren().get(i));
-                        }
-
-                        guardados.setRectangulos(rectangulosAux);
-
-                        //Se agrega el estado del programa a la pila
-                        estados.agregarPila(guardados);
-                        System.out.println(dibujos.getChildren().size());
-                        
-                        
-                    }
-                    rectAux.clear();
-                    
-                    
-                    
-                    
-                }
-                
-            });
+    
+    public void guardarPlantillaJson(){
         
+        //Cuando apretamos el boton guardar
+        botonGuardar.setOnAction((event) -> {
+
+            FileChooser fileChooser = new FileChooser();
+
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Json files (*.json)", "*.json"); //Filtramos por json
+            fileChooser.getExtensionFilters().add(extFilter); //Añadimos el filtro 
+
+            File file = fileChooser.showSaveDialog(stage); //Muestra la escena para guardar el archivo
+
+            if (file != null) {
+                JSON.crearJson(file.getPath(),guardados.getRectangulos()); //Generamos el json
+
+            }
+
+        });
+    }
+    
+    
+    
+    //Funcion que muestra una alerta si se pulsa el boton eliminar plantilla
+    public void eliminarPlantilla(File jsonFile){
+        
+        ButtonType yes = new ButtonType("Si");
+        ButtonType no = new ButtonType("No");
+        
+        Alert eliminar = new Alert(AlertType.CONFIRMATION, "", yes,no);
+        
+        eliminar.setHeaderText("Está seguro que desea eliminar la plantilla");
+       
+        eliminar.setResizable(false);
+        
+        eliminar.showAndWait();
+        
+        ButtonType resultado = eliminar.getResult();
+        
+        if(resultado.getText().equals("Si")){
+            jsonFile.delete();
+            System.out.println("Se ha eliminado el archivo: "+jsonFile.getPath());
+            //se deshabilita el boton eliminar ya que no hay plantilla guardada
+            estaSeguro.setDisable(true);
+            dibujos.getChildren().clear(); //Para limpiar la pantalla
+        }
         
     }
     
-    //Funcion que permite dibujar rectangulos
-    public void dibujarRectangulos(){
-        
-        escenaCompleta.setOnMousePressed(new EventHandler<MouseEvent>() {
-            
-            //Se obtienen las primeras cordenadas para hacer un dibujo                     
-            @Override
-            public void handle(MouseEvent event) {
-                
-                double xAux,yAux;
-                
-                xAux=event.getSceneX();
-                yAux=event.getSceneY();
-                
-                if (!(xAux>1 && xAux<=anchoPantalla*razon1   && yAux>0 && yAux<=45)) {
-                    xOffset = xAux;
-                    yOffset = yAux;
+    //Se lee una plantilla creada
+    public void leerPlantilla(){
+        //Cuando apretamos el boton Leer
+        botonLeer.setOnAction((event) -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Buscar JSON");
 
-                }
-                else{
-                    //System.out.println(bandera);
-                    xOffset=0;
-                    yOffset=0;
-                    bandera=0;
-                }
+            // Agregar filtros para facilitar la busqueda
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("json", "*.json")
+            );
 
-//                System.out.println("Bandera: "+bandera);
-//                System.out.println("Coordenadas: " + "x: "+ xOffset + " y: "+yOffset);
-//                System.out.println("ancho: " + ancho);
-//                System.out.println("alto: " + alto);
-            }
+            // Obtener pdf seleccionado
+            File jsonFile = fileChooser.showOpenDialog(null);
+
+            if(jsonFile != null){
+                //Se habilita el boton eliminar ya que se cargó una plantilla en el programa
+                estaSeguro.setDisable(false);
+                JSON.leerJson(jsonFile);
 
 
-        });
-        
-        //Se dibuja el rectangulo
-        escenaCompleta.setOnMouseClicked((events)->{
-            double ancho=0;
-            double alto=0;
-            //Se limita el margen donde se puede hacer click para dibujar
-            if(xOffset>1 && xOffset<=anchoPantalla*razon1 && yOffset>45 && yOffset<(altoPantalla*razon2)){
-                bandera++;
-            }
+                System.out.println(jsonFile.getName());
 
+                ArrayList<Button> rectAux =JSON.getRectangulosLeidos();
 
-            if (bandera==1) {
-                origenX=xOffset;
-                origenY=yOffset;
-            }
-            
-            if (bandera==2 ) {
+                System.out.println("primer aux: " + rectAux.size());
 
-                ancho=xOffset-origenX;
-                alto=yOffset-origenY;
+                dibujos.getChildren().clear();
 
-                //System.out.println("Bandera"+bandera);
-
-
-                if(ancho<=0 || alto<=0 || origenX==0 || origenY==0 || xOffset==0 || yOffset==0 ){
-                    xOffset=0;
-                    yOffset=0;
-                    alto=0;
-                    ancho=0;
-
-                    bandera=0;
-
-                }
-                else{
-                    rectangulo = new Rectangulos();
-                    rectangulo.setX(origenX);
-                    rectangulo.setY(origenY);
-                    rectangulo.setAlto(alto);
-                    rectangulo.setAncho(ancho);
-                    rectangulo.setPosicionEnPantalla();
-                  
+                for (Button rectLeidos : rectAux) {
+                    dibujos.getChildren().add(rectLeidos);
                     ArrayList<Button> rectangulosAux = new ArrayList<>();
-                    
-                    //Se agrega el rectangulo al contenedor de dibujos
-                    dibujos.getChildren().add(rectangulo.getBotonRectangulo());
                     dibujos.setVisible(true);
                     estados.pilaY.clear();
                     //Se agregan al arraylist todos los dibujos creados
                     for (int i = 0; i < dibujos.getChildren().size(); i++) {
                         rectangulosAux.add((Button)dibujos.getChildren().get(i));
                     }
-                    
+
                     guardados.setRectangulos(rectangulosAux);
-                    
+
                     //Se agrega el estado del programa a la pila
                     estados.agregarPila(guardados);
-                    estados.imprimir();
+                    System.out.println(dibujos.getChildren().size());
 
-                    xOffset=0;
-                    yOffset=0;
-                    bandera=0;
 
                 }
-            }          
+                rectAux.clear();
+                //Funcion eliminar plantilla cargada
+                estaSeguro.setOnAction((event2) -> {
+
+                    eliminarPlantilla(jsonFile);
+
+                });
+            }
         });
     }
+    
+//    //Funcion que permite dibujar rectangulos
+//    public void dibujarRectangulos(){
+//        
+//        escenaCompleta.setOnMousePressed(new EventHandler<MouseEvent>() {
+//            
+//            //Se obtienen las primeras cordenadas para hacer un dibujo                     
+//            @Override
+//            public void handle(MouseEvent event) {
+//                
+//                double xAux,yAux;
+//                
+//                xAux=event.getSceneX();
+//                yAux=event.getSceneY();
+//                
+//                if (!(xAux>1 && xAux<=anchoPantalla*razon1   && yAux>0 && yAux<=45)) {
+//                    xOffset = xAux;
+//                    yOffset = yAux;
+//
+//                }
+//                else{
+//                    //System.out.println(bandera);
+//                    xOffset=0;
+//                    yOffset=0;
+//                    bandera=0;
+//                }
+//
+////                System.out.println("Bandera: "+bandera);
+////                System.out.println("Coordenadas: " + "x: "+ xOffset + " y: "+yOffset);
+////                System.out.println("ancho: " + ancho);
+////                System.out.println("alto: " + alto);
+//            }
+//
+//
+//        });
+//        
+//        //Se dibuja el rectangulo
+//        escenaCompleta.setOnMouseClicked((events)->{
+//            double ancho=0;
+//            double alto=0;
+//            //Se limita el margen donde se puede hacer click para dibujar
+//            if(xOffset>1 && xOffset<=anchoPantalla*razon1 && yOffset>45 && yOffset<(altoPantalla*razon2)){
+//                bandera++;
+//            }
+//
+//
+//            if (bandera==1) {
+//                origenX=xOffset;
+//                origenY=yOffset;
+//            }
+//            
+//            if (bandera==2 ) {
+//
+//                ancho=xOffset-origenX;
+//                alto=yOffset-origenY;
+//
+//                //System.out.println("Bandera"+bandera);
+//
+//
+//                if(ancho<=0 || alto<=0 || origenX==0 || origenY==0 || xOffset==0 || yOffset==0 ){
+//                    xOffset=0;
+//                    yOffset=0;
+//                    alto=0;
+//                    ancho=0;
+//
+//                    bandera=0;
+//
+//                }
+//                else{
+//                    rectangulo = new Rectangulos();
+//                    rectangulo.setX(origenX);
+//                    rectangulo.setY(origenY);
+//                    rectangulo.setAlto(alto);
+//                    rectangulo.setAncho(ancho);
+//                    rectangulo.setPosicionEnPantalla();
+//                  
+//                    ArrayList<Button> rectangulosAux = new ArrayList<>();
+//                    
+//                    //Se agrega el rectangulo al contenedor de dibujos
+//                    dibujos.getChildren().add(rectangulo.getBotonRectangulo());
+//                    dibujos.setVisible(true);
+//                    estados.pilaY.clear();
+//                    //Se agregan al arraylist todos los dibujos creados
+//                    for (int i = 0; i < dibujos.getChildren().size(); i++) {
+//                        rectangulosAux.add((Button)dibujos.getChildren().get(i));
+//                    }
+//                    
+//                    guardados.setRectangulos(rectangulosAux);
+//                    
+//                    //Se agrega el estado del programa a la pila
+//                    estados.agregarPila(guardados);
+//                    estados.imprimir();
+//
+//                    xOffset=0;
+//                    yOffset=0;
+//                    bandera=0;
+//
+//                }
+//            }          
+//        });
+//    }
     
     double ancho1;
     double alto1;
@@ -639,24 +686,38 @@ public class Pantalla2Controller implements Initializable{
         Image imagenLeer = new Image(new File("botonLeer.png").toURI().toString(),35,36,false,true);
         ImageView iconoLeer = new ImageView(imagenLeer);
         
+        Image imagenDeleteJson = new Image(new File("botonEliminarJson.png").toURI().toString(),35,36,false,true);
+        ImageView iconoDeleteJson = new ImageView(imagenDeleteJson);
+        Tooltip tooltip;
         
         botonDibujar.setGraphic(iconoDibujar);
         botonDibujar.setStyle("-fx-base: white;");
-
+        botonDibujar.setTooltip(tooltip = new Tooltip("Dibujar"));
+        
         botonIzqq.setGraphic(iconoVolverAtras);
         botonIzqq.setStyle("-fx-base: white;");
-
+        botonIzqq.setTooltip(tooltip = new Tooltip("Rehacer"));
+        
         botonDerr.setGraphic(iconoVolverAdelante);
         botonDerr.setStyle("-fx-base: white;");
-
+        botonDerr.setTooltip(tooltip = new Tooltip("Deshacer"));
+        
         botonBorrar.setGraphic(iconoBorrar);
         botonBorrar.setStyle("-fx-base: white;");
+        botonBorrar.setTooltip(tooltip = new Tooltip("Borrar"));
         
         botonGuardar.setGraphic(iconoGuardar);
         botonGuardar.setStyle("-fx-base: white;");
+        botonGuardar.setTooltip(tooltip = new Tooltip("Guardar Plantilla"));
         
         botonLeer.setGraphic(iconoLeer);
         botonLeer.setStyle("-fx-base: white;");
+        botonLeer.setTooltip(tooltip = new Tooltip("Leer Plantilla"));
+        
+        estaSeguro.setGraphic(iconoDeleteJson);
+        estaSeguro.setStyle("-fx-base: white;");
+        estaSeguro.setTooltip(tooltip = new Tooltip("Eliminar Plantilla Actual"));
+        estaSeguro.setDisable(true);
         
     }
     
