@@ -16,6 +16,7 @@ import java.io.Writer;
 import java.net.URL;
 import java.nio.Buffer;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +33,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -217,7 +219,7 @@ public class Pantalla2Controller implements Initializable{
                 if(botonDibujar.isSelected()){
                     //System.out.println("Se ha pulsado el boton dibujar");
                     //dibujarRectangulos();
-                    dibujar2(union);
+                    dibujar2(union,escene);
                     union.setCursor(Cursor.CROSSHAIR);
                     dibujosScroll.setPannable(false);
                     //coordenadas(dibujos);
@@ -373,7 +375,7 @@ public class Pantalla2Controller implements Initializable{
     double ancho1;
     double alto1;
     
-    public void dibujar2(Pane root3){
+    public void dibujar2(Pane root3,Scene scene){
         
         root3.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
@@ -386,13 +388,7 @@ public class Pantalla2Controller implements Initializable{
                 System.out.println("origen x:"+origenX);
                 System.out.println("origen y:"+origenY);
                 
-                contador++;
                 
-                String rectanguloN= "rectangulo "+contador;
-                System.out.println(rectanguloN);
-                Tooltip nombre = new Tooltip();
-                
-                nombre.setText(rectanguloN);
                 
                 rectangulo = new Rectangulos();
                 rectangulo.setX(origenX);
@@ -400,10 +396,11 @@ public class Pantalla2Controller implements Initializable{
                 
                 //Creamos un boton el cual se mostrará en pantalla
                 Button nuevo = new Button();
+                
                 nuevo = rectangulo.getBotonRectangulo();
                 rectangulo.setHacerPulsable(0);
                 rectangulo.hacerPulsable();
-                nuevo.setTooltip(nombre);
+                
                 //Se agrega el rectangulo al contenedor de dibujos
                 dibujos.getChildren().add(nuevo);
                 
@@ -473,35 +470,66 @@ public class Pantalla2Controller implements Initializable{
                                 root3.setOnMousePressed(null);
                                 root3.setOnMouseClicked(null);
                                 
-                                //Reiniciamos las variables para crear otro
-                                ancho1=0;
-                                alto1=0;
-                                xOffset=0;
-                                yOffset=0;
+                                TextInputDialog dialog = new TextInputDialog();
+                                dialog.setTitle("Nuevo Rectangulo");
+                                dialog.setHeaderText("Agregue nombre a nuevo rectangulo");
+                                dialog.setContentText("Nombre:");
+                                quitarKeyHandler(scene);
                                 
-                                //Creamos un arraylist el cual servira para guardar todos los rectangulos creados
-                                ArrayList<Button> rectangulosAux = new ArrayList<>();
-                                
-                                
-                                estados.pilaY.clear();
-                                //Se agregan al arraylist todos los dibujos creados
-                                for (int i = 0; i < dibujos.getChildren().size(); i++) {
-                                    rectangulosAux.add((Button)dibujos.getChildren().get(i));
+                                // Creamos una variable de tipo opcional por si el usuario se sale y no ingresa un nombre
+                                // o simplemente pulsa cancelar
+                                Optional<String> nombreRectangulo = dialog.showAndWait();
+                                if (nombreRectangulo.isPresent()){
+                                    System.out.println("Nuevo rectangulo: " + nombreRectangulo.get());
+                                    
+                                    Tooltip nombreRec = new Tooltip(nombreRectangulo.get());
+                                    //Obtenemos el ultimo rectangulo dibujado
+                                    int posicion = (dibujos.getChildren().size())-1;
+                                    //Creamos un boton auxiliar para guardar el ultimo rectangulo dibujado y asi ponerle el nombre ingresado
+                                    Button botonAux = (Button) dibujos.getChildren().get(posicion);
+                                    //Le damos el nombre al rectangulo
+                                    botonAux.setTooltip(nombreRec);
+                                    dibujos.getChildren().remove(posicion);
+                                    dibujos.getChildren().add(botonAux);
+                                  
+                                    //Reiniciamos las variables para crear otro
+                                    ancho1=0;
+                                    alto1=0;
+                                    xOffset=0;
+                                    yOffset=0;
+                                    
+                                    //Creamos un arraylist el cual servira para guardar todos los rectangulos creados
+                                    ArrayList<Button> rectangulosAux = new ArrayList<>();
+
+
+                                    estados.pilaY.clear();
+                                    //Se agregan al arraylist todos los dibujos creados
+                                    for (int i = 0; i < dibujos.getChildren().size(); i++) {
+                                        rectangulosAux.add((Button)dibujos.getChildren().get(i));
+                                    }
+
+                                    guardados.setRectangulos(rectangulosAux);
+
+                                    //Se agrega el estado del programa a la pila
+                                    estados.agregarPila(guardados);
+                                    estados.imprimir();
+                                    
                                 }
-
-                                guardados.setRectangulos(rectangulosAux);
-
-                                //Se agrega el estado del programa a la pila
-                                estados.agregarPila(guardados);
-                                estados.imprimir();
-                                
-//                                System.out.println("medidas rectangulo");
-//                                System.out.println("x: " + boton.getLayoutX());
-//                                System.out.println("y: " + boton.getLayoutY());
-//                                System.out.println("width: "+boton.getWidth());
-//                                System.out.println("height: "+boton.getHeight());
+                                else{
+                                    System.out.println("Se ha borrado el rectangulo por no ingresar su nombre");
+                                    ancho1=0;
+                                    alto1=0;
+                                    xOffset=0;
+                                    yOffset=0;
+                                    
+                                    //Borramos el ultimo rectangulo dibujado ya que el usuario no ingreso un nombre
+                                    int posicion = (dibujos.getChildren().size())-1;
+                                    dibujos.getChildren().remove(posicion);
+                                }
                                 event.consume();
-                                dibujar2(root3);
+                                addKeyHandler(scene);
+                                //LLamamos para dibujar de nuevo
+                                dibujar2(root3,scene);
                             }
                         });
                     }
@@ -705,12 +733,16 @@ public class Pantalla2Controller implements Initializable{
         
     }
     
+    //Funcion que corrige error al dibujar un rectangulo. Este error consiste en que
+    //cuando el usuario esta ingresando el nombre del rectangulo se abre una ventana y si dentro
+    //de esa ventana se pulsa control z el programa se cae
+    public void quitarKeyHandler(Scene scene){
+        
+        scene.setOnKeyPressed(null);
+        
+    }
     
-    
-    
-    
-    
-    public  void addKeyHandler(Scene scene) {
+    public void addKeyHandler(Scene scene) {
         
         scene.setOnKeyPressed((event) -> {
             //control Z
