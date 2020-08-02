@@ -15,7 +15,9 @@ import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import java.util.ArrayList;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.GridPane;
 /**
  *
  * @author sebas
@@ -23,7 +25,16 @@ import javafx.scene.control.Tooltip;
 public class OCR {
     TextArea textoOCR;
     String resultado;
+    MatrizDatos matriz = new MatrizDatos();
 
+    public void setMatriz(MatrizDatos matriz) {
+        this.matriz = matriz;
+    }
+
+    public MatrizDatos getMatriz() {
+        return matriz;
+    }
+    
     public TextArea getTextoOCR() {
         return textoOCR;
     }
@@ -98,12 +109,22 @@ public class OCR {
                 
             }
             
+            
+            ArrayList<RectangulosMatriz> rectangulosConTexto = new ArrayList<>();
+            
+            
             for (int i = 0; i < rectangulos2.size(); i++) {
                 String result = instance.doOCR(imageFile,rectangulos2.get(i));
                 result = result.replaceFirst("\n", "");
                 
                 System.out.print(nombres.get(i)+": "+result);
+                
+                rectangulosConTexto.add(new RectangulosMatriz(nombres.get(i), result));
             }
+            
+            MatrizDatos mAux = new MatrizDatos();
+            mAux.muestraDeMatriz(rectangulosConTexto);
+            setMatriz(mAux);
             
             
             //guardarEnTXT(result);
@@ -120,7 +141,6 @@ public class OCR {
         }
         
     }
-    
     
     public void guardarEnTXT(String imagenLeida){
         
