@@ -13,7 +13,9 @@ import javafx.scene.control.TextArea;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
-
+import java.util.ArrayList;
+import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 /**
  *
  * @author sebas
@@ -62,6 +64,54 @@ public class OCR {
             TextArea agregado = new TextArea(resultado);
             
             setTextoOCR(agregado);
+            
+            
+            //System.out.println(result);
+        } catch (TesseractException e) {
+            System.err.println(e.getMessage());
+        }
+        
+    }
+    
+    public void leerPorRectangulo(ArrayList<Button> rectangulos){
+        //Se cargan los dll necesarios para funcionar
+        System.loadLibrary ("dll/liblept1744");
+        System.loadLibrary ("dll/libtesseract3051");
+        
+        File imageFile = new File("imagen.png");
+        ITesseract instance = new Tesseract();  // JNA Interface Mapping
+        
+        // ITesseract instance = new Tesseract1(); // JNA Direct Mapping
+        instance.setLanguage("spa");//lenguaje
+                
+        try {
+            
+            ArrayList<Rectangle> rectangulos2 = new ArrayList<>();
+            ArrayList<String> nombres = new ArrayList<>();
+            
+            for (Button rectangulo : rectangulos) {
+                
+                Rectangle rec = new Rectangle((int)rectangulo.getLayoutX(),(int)rectangulo.getLayoutY(),(int)rectangulo.getWidth(),(int)rectangulo.getHeight());
+                rectangulos2.add(rec);
+                Tooltip aux = rectangulo.getTooltip();
+                nombres.add(aux.getText());
+                
+            }
+            
+            for (int i = 0; i < rectangulos2.size(); i++) {
+                String result = instance.doOCR(imageFile,rectangulos2.get(i));
+                result = result.replaceFirst("\n", "");
+                
+                System.out.print(nombres.get(i)+": "+result);
+            }
+            
+            
+            //guardarEnTXT(result);
+            
+            //setResultado(result);
+            //TextArea agregado = new TextArea(resultado);
+            
+            //setTextoOCR(agregado);
             
             
             //System.out.println(result);
