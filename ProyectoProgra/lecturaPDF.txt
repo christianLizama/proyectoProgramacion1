@@ -1,43 +1,20 @@
-Requisitos de Software 2020-I
-GRUPO TEAM PAJA Aguilera,
-Aguilera, Diego
-Galdames, Sebastián
-Lizama, Christian
-Nombre del Caso: Aplicación Geometría Graficador de triángulos
-Actores:
-. Usuario
-Suposiciones:
+Requisitos 2020-I 20-mayo
+Caso de Estudio: Kobold Fight Club (Kobold Encounter Calculator)
 
-. Se asume que la aplicación es de computador.
+No todos los casos que se estudian en el mundo real tienen que ver con situaciones o narraciones
+de clientes; en algunos casos pueden solicitarles ”crear el nuevo Uber", o ”copiar la página de PC
+Factory". Esta es una de esas situaciones.
 
-o Se asume que cuando se aprietan los botones “cambiar se abre una ventana
-adicional y luego de confirmar el cambio se cierra.
+El cliente, un tipo sospechoso con sobrepeso y un gorro fedora, Ies indica, haciendo gestos
+exagerados con las manos mientras bebe ocasionalmente de una botella de Pepsi y come Cheetos
+limpiando sus dedos en una polera negra de Metallica, que ”éste es el futuro de Iosjuegos de mesa",
+y que "no entiende por qué nadie lo ha hecho aquí, en Curicó". Sin dar más explicaciones, les ha
+solicitado hacer un análisis de la página web ”Kobold Fight Club", que según él traerá grandes
+ganancias para su empresa.
 
-. Se asume que un triángulo no puede tener 3 puntos con coordenadas (x,y) iguales.
+Ustedes deben hacer un levantamiento de requisitos de usuario y sistema de dicha página, con sus
+respectivos diagramas de Casos de Uso (NO + N1), y de Secuencia. Para este último, considerar sólo
+los procesos generales, para que las cosas no se salgan de control (es decir, no mucho detalle).
 
-o Se asume que si uno de los valores ingresados dentro del color (R,G,B) está fuera
-del rango entre 0 y 255, es reemplazado con un 0.
-
-o Se asume que el programa viene con un caso base. Ejemplo: triángqu con puntos:
-P1:(50,200), P2:(200,300), P3:(200,100,) y con colores predeterminados: verde para
-el fondo y negro para las líneas.
-
-o Se asume que los coordenadas del gráfico siempre son positivas.
-
-o Se asume que el tamaño máximo de la grilla del gráfico es de 1000 x 1000 px
-
-. Se asume que si el triángulo es muy pequeño se ajusta el zoom de la grilla para una
-visualización.
-
-Requisitos:
-RUO1: Cambiar puntos (F):
-RSO1: Guardar los 3 puntos (x,y) (F)
-RSOZ: Verificar que todos los puntos sean distintos y
-además sus valores deben ser entre 0 y 1000 (NF)
-RSO3: Confirmar nuevos puntos (F)
-RSO4: RU05 (F)
-RU02: Cambiar líneas (F)
-R605: RU06 (F)
-RUO3: Cambiar color triángulo (F)
-R805: RU06 (F)
+El link: httgs:¿¿kobold.club¿fight¿$—t¿encounter—buílder
 
