@@ -1,0 +1,2 @@
+popo: No todos los casos que se estudian en el mundo real tienen que ver con situaciones o narracionesde clientes; en algunos casos pueden solicitarles ”crear el nuevo Uber", o ”copiar la página de PC
+Factory". Esta es una de esas situaciones.
