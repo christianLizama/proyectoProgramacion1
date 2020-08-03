@@ -44,6 +44,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -108,6 +109,11 @@ public class Pantalla2Controller implements Initializable{
     GuardadoJson JSON = new GuardadoJson();
     //Creaci+on del objeto de la clase que permite leer el texto del pdf
     OCR lectorOcr = new OCR();
+    
+    
+    //Scroll que contiene el nombre del rectangulo con el texto extraido
+    ScrollPane scrollContenidos = new ScrollPane();
+    int cambiadorDeEscena=0;
     
     /**
      * Initializes the controller class.
@@ -194,6 +200,13 @@ public class Pantalla2Controller implements Initializable{
         ocr.setLayoutY(45);
         ocr.setPrefSize(anchoPantalla*razon1, altoPantalla*razon2);
         
+        //Asignamos propiedades del scroll con matriz
+        scrollContenidos.setLayoutX((anchoPantalla*razon1)+10);
+        scrollContenidos.setLayoutY(45);
+        scrollContenidos.setPrefSize((anchoPantalla*razon1)-100, (altoPantalla*razon2)-45);
+        scrollContenidos.setVisible(false);
+        
+        
         //Asignamos todas las propiedas al scroll
         setPropiedadesScroll(dibujosScroll,union);
         imagenPDF.setLayoutX(0);
@@ -203,8 +216,11 @@ public class Pantalla2Controller implements Initializable{
         contenedorTotal.setLayoutY(45);
         estaSeguro.setLayoutX(306);
         
+        
+        
+        
         //Añadimos todo a la escena completa
-        escenaCompleta.getChildren().addAll(contenedorTotal,ocr,botonDibujar,botonIzqq,botonDerr,botonBorrar,botonGuardar,botonLeer,estaSeguro,botonAlternar);// Se añade la pantalla de editar y la imagen del PDF
+        escenaCompleta.getChildren().addAll(contenedorTotal,ocr,scrollContenidos,botonDibujar,botonIzqq,botonDerr,botonBorrar,botonGuardar,botonLeer,estaSeguro,botonAlternar);// Se añade la pantalla de editar y la imagen del PDF
         Scene escene = new Scene(escenaCompleta,(anchoPantalla*razon1)*2, altoPantalla*razon2);//Se carga la escena completa en la escena que se mostrará
         
         //Asignamos la posición de los botones
@@ -259,7 +275,7 @@ public class Pantalla2Controller implements Initializable{
         //Se añade la funcion de control y en el boton que contiene la flecha hacia adelante
         pulsarBotonAdelante();
         
-        botonAlternarAccion();
+        botonAlternarAccion(ocr);
         
         //se añaden los botones al grupo que los contiene
         botonDibujar.setToggleGroup(GrupoBotones);
@@ -272,11 +288,34 @@ public class Pantalla2Controller implements Initializable{
  
     }
     
-    public void botonAlternarAccion(){
+    public void botonAlternarAccion(TextArea ocr){
         
         botonAlternar.setOnAction((event) -> {
-            System.out.println("pene");
-            lectorOcr.leerPorRectangulo(guardados.getRectangulos());
+            
+            if(cambiadorDeEscena==0){
+                
+                ocr.setVisible(false);
+
+                lectorOcr.leerPorRectangulo(guardados.getRectangulos());
+                MatrizDatos m = lectorOcr.getMatriz();
+
+                GridPane grid = m.getMatrizCheck();
+
+                scrollContenidos.setContent(grid);
+                scrollContenidos.setVisible(true);
+                cambiadorDeEscena=1;
+            }
+            else{
+                
+                ocr.setVisible(true);
+                scrollContenidos.setVisible(false);
+                cambiadorDeEscena=0;
+                
+                
+            }
+            
+            
+            
         });
     }
     
