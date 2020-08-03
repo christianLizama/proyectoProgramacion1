@@ -69,7 +69,8 @@ public class OCR {
         try {
             
             String result = instance.doOCR(imageFile);
-            guardarEnTXT(result);
+            
+            guardarEnTXT(result,"lecturaPDF.txt");
             
             setResultado(result);
             TextArea agregado = new TextArea(resultado);
@@ -111,14 +112,14 @@ public class OCR {
             
             
             ArrayList<RectangulosMatriz> rectangulosConTexto = new ArrayList<>();
-            
+            String salida="";
             
             for (int i = 0; i < rectangulos2.size(); i++) {
                 String result = instance.doOCR(imageFile,rectangulos2.get(i));
                 result = result.replaceFirst("\n", "");
                 
-                System.out.print(nombres.get(i)+": "+result);
-                
+                //System.out.print(nombres.get(i)+": "+result);
+                salida = salida + nombres.get(i)+"\t"+result;
                 rectangulosConTexto.add(new RectangulosMatriz(nombres.get(i), result));
             }
             
@@ -126,6 +127,7 @@ public class OCR {
             mAux.muestraDeMatriz(rectangulosConTexto);
             setMatriz(mAux);
             
+            guardarEnTXT(salida, "Grilla.txt");
             
             //guardarEnTXT(result);
             
@@ -142,14 +144,14 @@ public class OCR {
         
     }
     
-    public void guardarEnTXT(String imagenLeida){
+    public void guardarEnTXT(String imagenLeida,String nombreArchivo){
         
         FileWriter fichero = null;
         PrintWriter pw = null;
         try
         {
             //Guardamos el archivo en la carpeta del proyecto
-            fichero = new FileWriter("lecturaPDF.txt");
+            fichero = new FileWriter(nombreArchivo);
             pw = new PrintWriter(fichero);
             
             pw.print(imagenLeida);

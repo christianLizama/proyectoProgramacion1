@@ -28,14 +28,11 @@ public class MatrizDatos {
     
     GridPane matrizCheck = new GridPane(); 
     
-    Button agregar = new Button("Agregar");
-    
-    Pane paneMatriz = new Pane();
-    
     ScrollPane explorer =  new ScrollPane();
-   
+    
+    
     int j=1;
-
+    
     
     public ScrollPane getExplorer() {
         return explorer;
@@ -56,13 +53,10 @@ public class MatrizDatos {
     public void  muestraDeMatriz(ArrayList<RectangulosMatriz> Datos){
         explorer.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         
-        paneMatriz.getChildren().add(agregar);
-        
-        agregar.setLayoutY(500);
-        
         ArrayList<String> textosSelec = new ArrayList<>();
         
         int x=0;
+        
         for (int i = 0; i < Datos.size(); i++) {
             Label nombreTexto = new Label (Datos.get(i).getNombre());
             nombreTexto.setStyle("-fx-backgroud-color: yellow; -fx-text-fill: black;");
@@ -75,22 +69,29 @@ public class MatrizDatos {
             
             areaDeExtraccion.setStyle("-fx-backgroud-color: green; -fx-text-fill: black;");
             areaDeExtraccion.wrapTextProperty().set(true);
-            areaDeExtraccion.setPrefWidth(300);
-            areaDeExtraccion.setPrefHeight(50);
+            areaDeExtraccion.setPrefWidth(500);
+            areaDeExtraccion.setPrefHeight(80);
             
             CheckBox agregar = new CheckBox();
-            agregar.setPrefSize(50, 50);
+            agregar.setPrefSize(80, 80);
             agregar.setLayoutX(30);
             
+            Button espacio = new Button();
+            espacio.setVisible(false);
+            espacio.setDisable(true);
             
            
             
             matrizCheck.add(nombreTexto,0,x+i);
             x++;
             matrizCheck.add(areaDeExtraccion,0,j);
-            matrizCheck.add(agregar,5,j);
+            matrizCheck.add(espacio, 1, j);
+            matrizCheck.add(agregar,2,j);
+            
+            
             j++;
             j++;
+            
             
             
             agregar.setOnAction((event) -> {
@@ -98,30 +99,29 @@ public class MatrizDatos {
                     areaDeExtraccion.setDisable(true);
                     areaDeExtraccion.setOpacity(100);
                     
-                    textosSelec.add(areaDeExtraccion.getText());
+                    
+                    textosSelec.add(nombreTexto+":"+areaDeExtraccion.getText()+"\n");
                     
                     
                 }
                 else{//SE borra
                     areaDeExtraccion.setDisable(false);
                     
+                    
+                    
                     for (int k = 0; k < textosSelec.size(); k++) {
-                        if(textosSelec.get(k).equals(areaDeExtraccion.getText())){
+                        if(textosSelec.get(k).equals(nombreTexto+":"+areaDeExtraccion.getText()+"\n")){
+                            System.out.println("xd");
                             textosSelec.remove(k);          
                         }
                     }
+                    //System.out.println(textosSelec.get(0));
+                    
                 }   
             });
-        }
-        
-        System.out.println("");
-        agregar.setOnAction((event) -> {
-           
-            for (int i = 0; i < textosSelec.size(); i++) {
-                
-                System.out.println(textosSelec.get(i));
-            }
             
-        });
+            
+            
+        }
     }
 }
