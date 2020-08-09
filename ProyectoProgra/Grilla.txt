@@ -1,5 +1,4 @@
-as	UTAL * Requisitos de Software
-asad	Puntos de Función: Caso U.N. Squadron
-asdfdaf	La tarea de esta semana es determinar el esfuerzo y el tiempo que tomará desarrollar el casocorrespondiente, usando la métrica de Puntos de Función. Recuerde que puede guiarse de los
-requisitos y/o diagramas del caso, no necesariamente del enunciada
-
+jadkj	UTAL * Requisitos de Software
+asdasdsadsad	Puntos de Función: Caso U.N. Squadron
+afasasfasf	Deben Justificar los siguientes elementos:
+dsadadas	Ejemplos:

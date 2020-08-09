@@ -1,32 +1,32 @@
-UTAL * Requisitos de Software 2020-I
-Puntos de Funcion: Caso U.N. Squadron
+UTAL * Requisitos de Software 20204
+Puntos de Función: Caso U.N. Squadron
 
 La tarea de esta semana es determinar el esfuerzo y el tiempo que tomará desarrollar el caso
-correspondiente, usando la métrica de Puntos de Función. Recuerde que puede guiarse de los
-requisitos y/o diagramas del caso, no necesariamente del enunciada
+correspondiente, usando Wa métrica de Puntos de Función. Recuerde que puede guiarse de los
+requisitos v/o diagramas de! caso, no necesariamente del enunciado.
 
-Deben justificar los siguientes elementos:
+Deben Justificar los siguientes elementos:
 
-- Cada uno de los ítems de las categorías de puntos de función (entradas, salidas, etc.),
-indicando los requisitos/CU que los generan,
+- Cada uno de los ítems de las categorías de puntos de función (entradas, saHdas, etc.],
+índícando Ios requisitos/CU que los generan.
 
-, El motivo por el que tienen el valor correspondiente en las tablas de ponderación o la de
+- El motivo por el que tienen el valor correspondiente en las tablas de ponderación o la de
 complejidad estimada (bajo, medio, etc.).
 
 - El porqué de cada uno de los valores de los factores de ajuste ambiental.
 
 Además, deben indicar claramente cada una de las fórmulas utilizadas, sus valores
 reemplazados, y los resultados; esto para saber de dónde sacan sus números raros.
-Finalmente, deben indicar de manera clara y explícita los valores del esfuerzo, y el tiempo,
+Finalmente, deben indícar de manera clara y explícita los valores del esfuerzo, y el tiempo,
 considerando que sus equipos van a realizar el desarrollo.
 
 Ejemplos:
 
-, EI1 (iniciar sesión): Es compleja parque hacemos la conversión manualmente del
+- EI1 (iniciar sesión): Es compleja porque hacemos la conversión manualmente del
 string de usuario y contraseña con un procesador cuántico que envía señales
-interdimensionales al servidon
+interdimensionales al servidor.
 
-- E03 (iniciar sesión-crear reserva): Es media (4) porque se envían tantos atributos y
+- EQ3 (iniciar sesión-crear reserva): Es media (4) porque se envían tantos atributos y
 se modifican tantos ficheros, que son los siguientes… [lista de ficheros y atributos].
 
 - EIF (confirmar rut con registro civil): Es simple porque se envían datos y se espera
@@ -36,5 +36,5 @@ una respuesta.
 datos enorme en un tiempo muy reducidos, deben hacerse miles de pruebas, y
 deben usarse herramientas de benchmarking en todo momento.
 
-[por sí no la notaron son descripciones exageradas para que no las copien verbatim]
+[por si no lo notaron son descripciones exageradas pura que no las copien verbatim]
 

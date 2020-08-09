@@ -76,7 +76,7 @@ public class MatrizDatos {
         matrizCheck.add(espacio2, 0, 0);
         matrizCheck.add(seleccionarTodo, 2, 0);
         
-        
+        //Añadimos el nombre más el text area que permite editar el texto extraido
         for (int i = 0; i < Datos.size(); i++) {
             Label nombreTexto = new Label(Datos.get(i).getNombre());
             nombreTexto.setStyle("-fx-backgroud-color: yellow; -fx-text-fill: black;");

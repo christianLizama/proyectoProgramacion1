@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 
 /**
  *
@@ -27,9 +28,9 @@ import javafx.scene.control.Button;
  */
 public class GuardadoJson {
     
-    ArrayList<Rectangle> rectangulos = new ArrayList<>();
     ArrayList<Button> rectangulosLeidos = new ArrayList<>();
-
+    ArrayList<RectangulosJson> rectangulosGuardados = new ArrayList<>();
+    
     public ArrayList<Button> getRectangulosLeidos() {
         return rectangulosLeidos;
     }
@@ -43,8 +44,8 @@ public class GuardadoJson {
                 GsonBuilder gsonBuilder = new GsonBuilder();
                 Gson gson = gsonBuilder.create();
                 Writer writer = new FileWriter(nombreArchivo); //Crea el archivo gson en la ruta especifica
-                gson.toJson(rectangulos, writer); //Crea el json
-                rectangulos.clear(); //Limpiamos el arraylist para no sobreescribir datos
+                gson.toJson(rectangulosGuardados, writer); //Crea el json
+                rectangulosGuardados.clear(); //Limpiamos el arraylist para no sobreescribir datos
                 writer.close(); 
             }
 
@@ -59,13 +60,21 @@ public class GuardadoJson {
         
         for (int i = 0; i < rectangulosBotones.size(); i++) {//Recorremos el arraylist de botones
             //Obtenemos los datos de los botomes/rectangulos
+            RectangulosJson rectangle = new RectangulosJson();
+            
             int x = (int) rectangulosBotones.get(i).getLayoutX();
             int y = (int) rectangulosBotones.get(i).getLayoutY();
             int width = (int) rectangulosBotones.get(i).getWidth();
             int height = (int) rectangulosBotones.get(i).getHeight();
-                    
+            
+            String name = rectangulosBotones.get(i).getTooltip().getText();
             Rectangle rectangulo = new Rectangle(x, y, width, height); //Creamos nuevos rectangulos de tipo Rectangle
-            rectangulos.add(rectangulo);
+
+            rectangle.setRectangulo(rectangulo);
+            rectangle.setNombre(name);
+            
+            rectangulosGuardados.add(rectangle);
+            
         }
         
     }
@@ -89,11 +98,11 @@ public class GuardadoJson {
 
             //obtenemos el tipo de variable que en este casos seria un arraylist de Tipo Rectangle
             //con esto podemos leer cada rectangulo creado con el json y cargarlo en un nuevo arraylist
-            Type type = new TypeToken<ArrayList<Rectangle>>() {
+            Type type = new TypeToken<ArrayList<RectangulosJson>>() {
             }.getType();
 
             //cargamos la planilla del usuario en un nuevo arraylist
-            ArrayList<Rectangle> inpList = new Gson().fromJson(datos, type);
+            ArrayList<RectangulosJson> inpList = new Gson().fromJson(datos, type);
 
 //            System.out.println("x: "+inpList.get(0).getX());
 //            System.out.println("y: "+inpList.get(0).getY());
@@ -110,21 +119,21 @@ public class GuardadoJson {
         
     }
     
-    public void convertirRectangulos(ArrayList<Rectangle> rectangulos){
+    public void convertirRectangulos(ArrayList<RectangulosJson> rectangulos){
         
-        for (Rectangle rectangulo : rectangulos) {
+        for (RectangulosJson rectangulo : rectangulos) {
             Button botonRectangulo = new Button();
-            botonRectangulo.setLayoutX(rectangulo.getX());
-            botonRectangulo.setLayoutY(rectangulo.getY());
-            botonRectangulo.setPrefSize(rectangulo.getWidth(),rectangulo.getHeight());
+            botonRectangulo.setLayoutX(rectangulo.getRectangulo().getX());
+            botonRectangulo.setLayoutY(rectangulo.getRectangulo().getY());
+            botonRectangulo.setPrefSize(rectangulo.getRectangulo().getWidth(),rectangulo.getRectangulo().getHeight());
+            
+            Tooltip nombreRec = new Tooltip(rectangulo.getNombre());
+            
+            botonRectangulo.setTooltip(nombreRec);
+            
             botonRectangulo.setMinSize(botonRectangulo.USE_PREF_SIZE,botonRectangulo.USE_PREF_SIZE);
             botonRectangulo.setStyle("-fx-background-color: transparent;-fx-border-color:black;");
             rectangulosLeidos.add(botonRectangulo);
         }
-        
-        
     }
-    
-    
-    
 }
