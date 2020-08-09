@@ -44,6 +44,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -67,13 +68,14 @@ public class Pantalla2Controller implements Initializable{
     Button botonGuardar = new Button();
     Button botonLeer = new Button();
     Button estaSeguro = new Button();
+    Button botonAlternar = new Button();
     
     //coordenadas de dibujo
     double xOffset = 0; 
     double yOffset = 0;
-    double origenX=0;
-    double origenY=0;
-    int contador=0;
+    double origenX = 0;
+    double origenY = 0;
+    int contador = 0;
     
     GsonBuilder gsonBuilder = new GsonBuilder();
     Stage stage = new Stage();//Se crea el Escenario
@@ -108,6 +110,11 @@ public class Pantalla2Controller implements Initializable{
     //Creaci+on del objeto de la clase que permite leer el texto del pdf
     OCR lectorOcr = new OCR();
     
+    
+    //Scroll que contiene el nombre del rectangulo con el texto extraido
+    ScrollPane scrollContenidos = new ScrollPane();
+    int cambiadorDeEscena=0;
+    
     /**
      * Initializes the controller class.
      */
@@ -127,8 +134,8 @@ public class Pantalla2Controller implements Initializable{
                 //recorre todas las paginas que posea un pdf (en este caso se usaran pdf de una sola pag)
                 
                 //Numero de pagina, escala, tipo de imagen
-                BufferedImage bim = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
-                //BufferedImage bim = pdfRenderer.renderImage(0, 5);
+                //BufferedImage bim = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
+                BufferedImage bim = pdfRenderer.renderImage(0, 5/2,ImageType.GRAY);
                 //Se guarda en la carpeta del proyecto el pdf convertido en imagen
                 File file = new File("imagen.png");
                 ImageIO.write(bim, "png", file);
@@ -154,6 +161,17 @@ public class Pantalla2Controller implements Initializable{
         }
     }
     
+    public void activarBotonAlternar(){
+        
+        if(dibujos.getChildren().size()>=1){
+            botonAlternar.setDisable(false);
+        }
+        else{
+            botonAlternar.setDisable(true);
+        }
+    }
+    
+    
     public void cargadorDeEscena (ImageView imagenPDF) {
         
         //Definimos un contenedor total que contiene el scroll
@@ -177,10 +195,16 @@ public class Pantalla2Controller implements Initializable{
         //Obtenemos el texto del documento
         ocr = lectorOcr.getTextoOCR();
         
+        //Asignamos propiedades del scroll con matriz
+        scrollContenidos.setLayoutX((anchoPantalla*0.65)+10);
+        scrollContenidos.setLayoutY(45);
+        scrollContenidos.setPrefSize((anchoPantalla*razon1)-100, (altoPantalla*razon2)-45);
+        scrollContenidos.setVisible(false);
+        
         //Asignamos sus propiedades
-        ocr.setLayoutX((anchoPantalla*razon1)+10);
+        ocr.setLayoutX((anchoPantalla*0.65));
         ocr.setLayoutY(45);
-        ocr.setPrefSize(anchoPantalla*razon1, altoPantalla*razon2);
+        ocr.setPrefSize((anchoPantalla*0.35), (altoPantalla*razon2)-45);
         
         //Asignamos todas las propiedas al scroll
         setPropiedadesScroll(dibujosScroll,union);
@@ -192,15 +216,17 @@ public class Pantalla2Controller implements Initializable{
         estaSeguro.setLayoutX(306);
         
         //Añadimos todo a la escena completa
-        escenaCompleta.getChildren().addAll(contenedorTotal,ocr,botonDibujar,botonIzqq,botonDerr,botonBorrar,botonGuardar,botonLeer,estaSeguro);// Se añade la pantalla de editar y la imagen del PDF
-        Scene escene = new Scene(escenaCompleta,(anchoPantalla*razon1)*2, altoPantalla*razon2);//Se carga la escena completa en la escena que se mostrará
+        escenaCompleta.getChildren().addAll(contenedorTotal,ocr,scrollContenidos,botonDibujar,botonIzqq,botonDerr,botonBorrar,botonGuardar,botonLeer,estaSeguro,botonAlternar);// Se añade la pantalla de editar y la imagen del PDF
+        Scene escene = new Scene(escenaCompleta,anchoPantalla, altoPantalla);//Se carga la escena completa en la escena que se mostrará
         
         //Asignamos la posición de los botones
-        botonBorrar.setLayoutX(153);
         botonIzqq.setLayoutX(51);
         botonDerr.setLayoutX(102);
+        botonBorrar.setLayoutX(153);
         botonGuardar.setLayoutX(204);
         botonLeer.setLayoutX(255);
+        botonAlternar.setLayoutX(357);
+        
         final ToggleGroup GrupoBotones = new ToggleGroup();
         
         
@@ -244,24 +270,55 @@ public class Pantalla2Controller implements Initializable{
         //Se añade la funcion de control y en el boton que contiene la flecha hacia adelante
         pulsarBotonAdelante();
         
+        botonAlternarAccion(ocr);
+        
         //se añaden los botones al grupo que los contiene
         botonDibujar.setToggleGroup(GrupoBotones);
         botonBorrar.setToggleGroup(GrupoBotones);
         
         addKeyHandler(escene);
-        stage.setResizable(false);
+        stage.setMaximized(true);
         stage.setScene(escene);//Se monta la escena en el escenario
         stage.show();//Se muestra el escenario
  
     }
     
-   
+    public void botonAlternarAccion(TextArea ocr){
+        
+        botonAlternar.setOnAction((event) -> {
+            
+            if(cambiadorDeEscena==0){
+                
+                ocr.setVisible(false);
+
+                lectorOcr.leerPorRectangulo(guardados.getRectangulos());
+                MatrizDatos m = lectorOcr.getMatriz();
+
+                GridPane grid = m.getMatrizCheck();
+
+                scrollContenidos.setContent(grid);
+                scrollContenidos.setVisible(true);
+                cambiadorDeEscena=1;
+            }
+            else{
+                
+                ocr.setVisible(true);
+                scrollContenidos.setVisible(false);
+                cambiadorDeEscena=0;
+                
+                
+            }
+            
+            
+            
+        });
+    }
     
     //Le damos las propiedades al scroll
     public void setPropiedadesScroll(ScrollPane dibujosScroll,Pane union){
         dibujosScroll.setPannable(true);
         dibujosScroll.setContent(union);
-        dibujosScroll.setPrefSize(550, 650);
+        dibujosScroll.setPrefSize(anchoPantalla*0.65, (altoPantalla*razon2)-45);
         dibujosScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         dibujosScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
     }
@@ -283,7 +340,6 @@ public class Pantalla2Controller implements Initializable{
                 JSON.crearJson(file.getPath(),guardados.getRectangulos()); //Generamos el json
 
             }
-
         });
     }
     
@@ -310,6 +366,7 @@ public class Pantalla2Controller implements Initializable{
             //se deshabilita el boton eliminar ya que no hay plantilla guardada
             estaSeguro.setDisable(true);
             dibujos.getChildren().clear(); //Para limpiar la pantalla
+            activarBotonAlternar();
         }
         
     }
@@ -323,7 +380,7 @@ public class Pantalla2Controller implements Initializable{
 
             // Agregar filtros para facilitar la busqueda
             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("json", "*.json")
+                new FileChooser.ExtensionFilter("json", "*.json")
             );
 
             // Obtener pdf seleccionado
@@ -387,8 +444,6 @@ public class Pantalla2Controller implements Initializable{
                 
                 System.out.println("origen x:"+origenX);
                 System.out.println("origen y:"+origenY);
-                
-                
                 
                 rectangulo = new Rectangulos();
                 rectangulo.setX(origenX);
@@ -509,11 +564,11 @@ public class Pantalla2Controller implements Initializable{
                                     }
 
                                     guardados.setRectangulos(rectangulosAux);
-
+                                   
                                     //Se agrega el estado del programa a la pila
                                     estados.agregarPila(guardados);
                                     estados.imprimir();
-                                    
+                                    activarBotonAlternar();
                                 }
                                 else{
                                     System.out.println("Se ha borrado el rectangulo por no ingresar su nombre");
@@ -521,10 +576,11 @@ public class Pantalla2Controller implements Initializable{
                                     alto1=0;
                                     xOffset=0;
                                     yOffset=0;
-                                    
                                     //Borramos el ultimo rectangulo dibujado ya que el usuario no ingreso un nombre
                                     int posicion = (dibujos.getChildren().size())-1;
                                     dibujos.getChildren().remove(posicion);
+                                    activarBotonAlternar();
+
                                 }
                                 event.consume();
                                 addKeyHandler(scene);
@@ -572,6 +628,7 @@ public class Pantalla2Controller implements Initializable{
                         //Se agrega el cambio efectuado a la pila de control Z
                         estados.agregarPila(guardados);
                         estados.imprimir();
+                        activarBotonAlternar();
                     }
                 }                            
             });          
@@ -601,6 +658,11 @@ public class Pantalla2Controller implements Initializable{
         
         Image imagenDeleteJson = new Image(new File("botonEliminarJson.png").toURI().toString(),35,36,false,true);
         ImageView iconoDeleteJson = new ImageView(imagenDeleteJson);
+        
+        Image imagenAlternar = new Image(new File("botonCambiar.png").toURI().toString(),35,36,false,true);
+        ImageView iconoAlternar = new ImageView(imagenAlternar);
+        
+        
         Tooltip tooltip;
         
         botonDibujar.setGraphic(iconoDibujar);
@@ -631,6 +693,12 @@ public class Pantalla2Controller implements Initializable{
         estaSeguro.setStyle("-fx-base: white;");
         estaSeguro.setTooltip(tooltip = new Tooltip("Eliminar Plantilla Actual"));
         estaSeguro.setDisable(true);
+        
+        botonAlternar.setGraphic(iconoAlternar);
+        botonAlternar.setStyle("-fx-base: white;");
+        botonAlternar.setTooltip(tooltip = new Tooltip("Alternar vista"));
+        botonAlternar.setDisable(true);
+        
         
     }
     
@@ -679,7 +747,7 @@ public class Pantalla2Controller implements Initializable{
                 rectangulosNew.add((Button)dibujos.getChildren().get(i));
             }
             guardados.setRectangulos(rectangulosNew);
-
+            activarBotonAlternar();
 
         }
         else{
@@ -700,6 +768,7 @@ public class Pantalla2Controller implements Initializable{
                     rectangulosNew.add((Button)dibujos.getChildren().get(i));
                 }
                 guardados.setRectangulos(rectangulosNew);
+                activarBotonAlternar();
             }
         }
         
@@ -729,6 +798,7 @@ public class Pantalla2Controller implements Initializable{
                 rectangulosNew.add((Button)dibujos.getChildren().get(i));
             }
             guardados.setRectangulos(rectangulosNew);
+            activarBotonAlternar();
         }
         
     }
@@ -749,11 +819,13 @@ public class Pantalla2Controller implements Initializable{
             if (controlZ.match(event)) {
                 
                 funcionZ();
+                activarBotonAlternar();
                 event.consume();
             }
             //control Y
             if(controly.match(event)){
                 funcionY();
+                activarBotonAlternar();
                 event.consume();
             }
         });
