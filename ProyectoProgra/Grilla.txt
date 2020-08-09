@@ -1,18 +1,4 @@
-sdaa	Requisitos
-dsadsads	Distintas tarifas (primera clase, bussiness, turista)
-Mostrar los vuelos con las plazas disponibles para cada tipo de tarifa, y el usuario
-puede elegir cuál reservar
-
-Si se reserva pero no se compra. la reserva se anota en una lista de espera
-
-Las reservas se mantienen hasta 15 días antes del vuelo
-
-Las plazas no vendidas y no compradas deben ofrecerse a los clientes en lista de
-espera
-
-Un billete vendido también puede devolverse, siempre que sea 15 antes de la fecha
-de este.
-
-La compañía también desea saber por cada vuelo y tarifa el grado de ocupación,
-plazas vendidas, en lista de espera
-
+jadkj	UTAL * Requisitos de Software
+asdasdsadsad	Puntos de Función: Caso U.N. Squadron
+afasasfasf	Deben Justificar los siguientes elementos:
+dsadadas	Ejemplos:
