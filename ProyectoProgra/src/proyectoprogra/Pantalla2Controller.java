@@ -134,8 +134,8 @@ public class Pantalla2Controller implements Initializable{
                 //recorre todas las paginas que posea un pdf (en este caso se usaran pdf de una sola pag)
                 
                 //Numero de pagina, escala, tipo de imagen
-                BufferedImage bim = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
-                //BufferedImage bim = pdfRenderer.renderImage(0, 5);
+                //BufferedImage bim = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
+                BufferedImage bim = pdfRenderer.renderImage(0, 5/2,ImageType.GRAY);
                 //Se guarda en la carpeta del proyecto el pdf convertido en imagen
                 File file = new File("imagen.png");
                 ImageIO.write(bim, "png", file);
@@ -195,17 +195,16 @@ public class Pantalla2Controller implements Initializable{
         //Obtenemos el texto del documento
         ocr = lectorOcr.getTextoOCR();
         
-        //Asignamos sus propiedades
-        ocr.setLayoutX((anchoPantalla*razon1)+10);
-        ocr.setLayoutY(45);
-        ocr.setPrefSize(anchoPantalla*razon1, altoPantalla*razon2);
-        
         //Asignamos propiedades del scroll con matriz
-        scrollContenidos.setLayoutX((anchoPantalla*razon1)+10);
+        scrollContenidos.setLayoutX((anchoPantalla*0.65)+10);
         scrollContenidos.setLayoutY(45);
         scrollContenidos.setPrefSize((anchoPantalla*razon1)-100, (altoPantalla*razon2)-45);
         scrollContenidos.setVisible(false);
         
+        //Asignamos sus propiedades
+        ocr.setLayoutX((anchoPantalla*0.65));
+        ocr.setLayoutY(45);
+        ocr.setPrefSize((anchoPantalla*0.35), (altoPantalla*razon2)-45);
         
         //Asignamos todas las propiedas al scroll
         setPropiedadesScroll(dibujosScroll,union);
@@ -216,15 +215,11 @@ public class Pantalla2Controller implements Initializable{
         contenedorTotal.setLayoutY(45);
         estaSeguro.setLayoutX(306);
         
-        
-        
-        
         //Añadimos todo a la escena completa
         escenaCompleta.getChildren().addAll(contenedorTotal,ocr,scrollContenidos,botonDibujar,botonIzqq,botonDerr,botonBorrar,botonGuardar,botonLeer,estaSeguro,botonAlternar);// Se añade la pantalla de editar y la imagen del PDF
-        Scene escene = new Scene(escenaCompleta,(anchoPantalla*razon1)*2, altoPantalla*razon2);//Se carga la escena completa en la escena que se mostrará
+        Scene escene = new Scene(escenaCompleta,anchoPantalla, altoPantalla);//Se carga la escena completa en la escena que se mostrará
         
         //Asignamos la posición de los botones
-        
         botonIzqq.setLayoutX(51);
         botonDerr.setLayoutX(102);
         botonBorrar.setLayoutX(153);
@@ -282,7 +277,7 @@ public class Pantalla2Controller implements Initializable{
         botonBorrar.setToggleGroup(GrupoBotones);
         
         addKeyHandler(escene);
-        stage.setResizable(false);
+        stage.setMaximized(true);
         stage.setScene(escene);//Se monta la escena en el escenario
         stage.show();//Se muestra el escenario
  
@@ -323,7 +318,7 @@ public class Pantalla2Controller implements Initializable{
     public void setPropiedadesScroll(ScrollPane dibujosScroll,Pane union){
         dibujosScroll.setPannable(true);
         dibujosScroll.setContent(union);
-        dibujosScroll.setPrefSize(anchoPantalla*razon1, (altoPantalla*razon2)-45);
+        dibujosScroll.setPrefSize(anchoPantalla*0.65, (altoPantalla*razon2)-45);
         dibujosScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         dibujosScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
     }
