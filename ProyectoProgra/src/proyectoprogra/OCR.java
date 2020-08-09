@@ -58,7 +58,7 @@ public class OCR {
         System.loadLibrary("dll/liblept1744");
         System.loadLibrary("dll/libtesseract3051");
         // TODO code application logic here
-        File imageFile = new File("imagen.png");
+        File imageFile = new File("imagenesPDF/imagen.png");
 
         ITesseract instance = new Tesseract();  // JNA Interface Mapping
 
@@ -69,7 +69,7 @@ public class OCR {
 
             String result = instance.doOCR(imageFile);
 
-            guardarEnTXT(result, "lecturaPDF.txt");
+            guardarEnTXT(result, "documentoCompleto.txt");
 
             setResultado(result);
             TextArea agregado = new TextArea(resultado);
@@ -88,7 +88,7 @@ public class OCR {
         System.loadLibrary("dll/liblept1744");
         System.loadLibrary("dll/libtesseract3051");
 
-        File imageFile = new File("imagen.png");
+        File imageFile = new File("imagenesPDF/imagen.png");
         ITesseract instance = new Tesseract();  // JNA Interface Mapping
 
         // ITesseract instance = new Tesseract1(); // JNA Direct Mapping

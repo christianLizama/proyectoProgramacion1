@@ -1,3 +1,7 @@
-hgfhgffg: UTAL
-gdfgfd: Factibilidad
-gdfgfddf: 3 tarea de esta
+Nombre: UTAL * Requisitos de Software
+Apellido: Puntos de Función: Caso U.N. Squadron
+xd: Deben Justificar los siguientes elementos:
+ej: Ejemplos:
+xd2: EQ3 (iniciar sesión-crear reserva):
+ssss: Nivel de Ejecución 5:
+asdads: (entradas, saHdas, etc.],
