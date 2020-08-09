@@ -137,15 +137,15 @@ public class Pantalla2Controller implements Initializable{
                 BufferedImage bim = pdfRenderer.renderImage(0, 5/2,ImageType.BINARY);
                 BufferedImage bim2 = pdfRenderer.renderImage(0, 5/2,ImageType.GRAY);
                 
+                //Seteamos la imagen binaria para la lectura
+                lectorOcr.setImagen(bim);
+                
                 //Se guarda en la carpeta del proyecto el pdf convertido en imagen
-                File file = new File("imagen.png");
                 File file2 = new File("imagenMuestra.png");
                 
                 //Archivos de salida
-                File outputfile = new File("imagenesPDF/imagen.png");
                 File outputfile2 = new File("imagenesPDF/imagenMuestra.png");
 
-                ImageIO.write(bim, "png", outputfile);//Se crea el archivo de lectura
                 ImageIO.write(bim2, "png", outputfile2);//Se crea el archivo que ve el usuario
                 
                 Image image = new Image(new File("imagenesPDF/imagenMuestra.png").toURI().toString());//Se carga la imagen
