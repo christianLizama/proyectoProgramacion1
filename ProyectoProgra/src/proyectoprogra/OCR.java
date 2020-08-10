@@ -5,16 +5,19 @@
  */
 package proyectoprogra;
 
+import com.opencsv.CSVWriter;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import javafx.scene.control.TextArea;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
@@ -110,40 +113,51 @@ public class OCR {
                 rectangulos2.add(rec);
                 Tooltip aux = rectangulo.getTooltip();
                 nombres.add(aux.getText());
-
             }
 
-            ArrayList<RectangulosMatriz> rectangulosConTexto = new ArrayList<>();
+            ArrayList<RectangulosMatriz> rectangulosConTexto = new ArrayList<>(); 
             String salida = "";
-
-            for (int i = 0; i < rectangulos2.size(); i++) {
+            //ArrayList donde se almacenara un arreglo de tipo String que contiene el nombre del rectangulo y su contenido
+            ArrayList<String[]> contenido = new ArrayList<>(); 
+            for (int i = 0; i < rectangulos2.size(); i++) { 
                 String result = instance.doOCR(imagen, rectangulos2.get(i));
                 result = result.replaceFirst("\n", "");
-
-                //System.out.print(nombres.get(i)+": "+result);
-                salida = salida + nombres.get(i) + "\t" + result;
+                String[] dato = {nombres.get(i),result}; //Almacenamos en el arreglo el nombre y el contenido del rectangulo
+                contenido.add(dato); //Añadimos al arreglo
+                
                 rectangulosConTexto.add(new RectangulosMatriz(nombres.get(i), result));
             }
-
+           
             MatrizDatos mAux = new MatrizDatos();
             mAux.muestraDeMatriz(rectangulosConTexto);
             setMatriz(mAux);
-
-            guardarEnTXT(salida, "Grilla.txt");
-
-            //guardarEnTXT(result);
-            //setResultado(result);
-            //TextArea agregado = new TextArea(resultado);
-            //setTextoOCR(agregado);
-            //System.out.println(result);
+            
+            writeToCsvFile(contenido, ";"); //Llamamos al metodo para crear el csv
+            
         } catch (TesseractException e) {
             System.err.println(e.getMessage());
         }
-
     }
-
-    public void guardarEnTXT(String imagenLeida, String nombreArchivo) {
-
+    
+    //Metodo para crear el archivo de tipo csv, que recibe un arraylist que almacena lo que escribiremos
+    //también un separador, en este caso: ";"
+    public void writeToCsvFile(ArrayList<String[]> thingsToWrite, String separator){
+        try (FileWriter writer = new FileWriter("Grilla.csv")){
+            for (String[] strings : thingsToWrite) {
+                for (int i = 0; i < strings.length; i++) {
+                    writer.append(strings[i]);
+                    if(i < (strings.length-1))
+                        writer.append(separator);
+                }
+                writer.append(System.lineSeparator());
+            }
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void guardarEnTXT(String texto, String nombreArchivo) {
         FileWriter fichero = null;
         PrintWriter pw = null;
         try {
@@ -151,21 +165,22 @@ public class OCR {
             fichero = new FileWriter(nombreArchivo);
             pw = new PrintWriter(fichero);
 
-            pw.print(imagenLeida);
+            pw.print(texto);
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
-
                 if (null != fichero) {
+                    System.out.println("Se ha creado el archivo: " + nombreArchivo);
                     fichero.close();
                 }
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
         }
-
     }
+    
+
 
 }

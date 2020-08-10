@@ -1,4 +1,3 @@
-jadkj	UTAL * Requisitos de Software
-asdasdsadsad	Puntos de Función: Caso U.N. Squadron
-afasasfasf	Deben Justificar los siguientes elementos:
-dsadadas	Ejemplos:
+fdffddf	Caso: Gestión de reservas de billetes de avión
+rr	20204
+aaaaaa	UTAL * Requisitos de Software

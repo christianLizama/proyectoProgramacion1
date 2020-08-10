@@ -267,7 +267,7 @@ public class Pantalla2Controller implements Initializable{
         guardarPlantillaJson();
         
         //Se añade la funcion del boton para leer json
-        leerPlantilla();
+        leerPlantilla(ocr);
         
         //Se añade la funcion de control z en el boton que contiene la flecha hacia atras
         pulsarBotonAtras();
@@ -349,7 +349,7 @@ public class Pantalla2Controller implements Initializable{
     
     
     //Metodo que muestra una alerta si se pulsa el boton eliminar plantilla
-    public void eliminarPlantilla(File jsonFile){
+    public void eliminarPlantilla(File jsonFile,TextArea ocr){
         
         ButtonType yes = new ButtonType("Si");
         ButtonType no = new ButtonType("No");
@@ -366,6 +366,11 @@ public class Pantalla2Controller implements Initializable{
         
         if(resultado.getText().equals("Si")){
             jsonFile.delete();
+            
+            ocr.setVisible(true);
+            scrollContenidos.setVisible(false);
+            cambiadorDeEscena=0;
+            
             System.out.println("Se ha eliminado el archivo: "+jsonFile.getPath());
             //se deshabilita el boton eliminar ya que no hay plantilla guardada
             estaSeguro.setDisable(true);
@@ -376,7 +381,7 @@ public class Pantalla2Controller implements Initializable{
     }
     
     //Se lee una plantilla creada
-    public void leerPlantilla(){
+    public void leerPlantilla(TextArea ocr){
         //Cuando apretamos el boton Leer
         botonLeer.setOnAction((event) -> {
             FileChooser fileChooser = new FileChooser();
@@ -402,7 +407,8 @@ public class Pantalla2Controller implements Initializable{
                 System.out.println("primer aux: " + rectAux.size());
 
                 dibujos.getChildren().clear();
-
+                
+                
                 for (Button rectLeidos : rectAux) {
                     dibujos.getChildren().add(rectLeidos);
                     ArrayList<Button> rectangulosAux = new ArrayList<>();
@@ -420,12 +426,15 @@ public class Pantalla2Controller implements Initializable{
                     System.out.println(dibujos.getChildren().size());
 
                 }
+                activarBotonAlternar();
+
+                
                 
                 rectAux.clear();
                 //Funcion eliminar plantilla cargada
                 estaSeguro.setOnAction((event2) -> {
 
-                    eliminarPlantilla(jsonFile);
+                    eliminarPlantilla(jsonFile,ocr);
 
                 });
             }
