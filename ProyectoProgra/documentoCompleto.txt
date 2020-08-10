@@ -1,40 +1,50 @@
-UTAL * Requisitos de Software 20204
-Puntos de Función: Caso U.N. Squadron
-
-La tarea de esta semana es determinar el esfuerzo y el tiempo que tomará desarrollar el caso
-correspondiente, usando Wa métrica de Puntos de Función. Recuerde que puede guiarse de los
-requisitos v/o diagramas de! caso, no necesariamente del enunciado.
-
-Deben Justificar los siguientes elementos:
-
-- Cada uno de los ítems de las categorías de puntos de función (entradas, saHdas, etc.],
-índícando Ios requisitos/CU que los generan.
-
-- El motivo por el que tienen el valor correspondiente en las tablas de ponderación o la de
-complejidad estimada (bajo, medio, etc.).
-
-- El porqué de cada uno de los valores de los factores de ajuste ambiental.
-
-Además, deben indicar claramente cada una de las fórmulas utilizadas, sus valores
-reemplazados, y los resultados; esto para saber de dónde sacan sus números raros.
-Finalmente, deben indícar de manera clara y explícita los valores del esfuerzo, y el tiempo,
-considerando que sus equipos van a realizar el desarrollo.
-
-Ejemplos:
-
-- EI1 (iniciar sesión): Es compleja porque hacemos la conversión manualmente del
-string de usuario y contraseña con un procesador cuántico que envía señales
-interdimensionales al servidor.
-
-- EQ3 (iniciar sesión-crear reserva): Es media (4) porque se envían tantos atributos y
-se modifican tantos ficheros, que son los siguientes… [lista de ficheros y atributos].
-
-- EIF (confirmar rut con registro civil): Es simple porque se envían datos y se espera
-una respuesta.
-
-, Nivel de Ejecución 5: Se necesita un supercomputador que soporte una carga de
-datos enorme en un tiempo muy reducidos, deben hacerse miles de pruebas, y
-deben usarse herramientas de benchmarking en todo momento.
-
-[por si no lo notaron son descripciones exageradas pura que no las copien verbatim]
+Rut : 60.910.000-1 Demandante : UNIVERSIDAD DE CHILE
+Dirección Maraf10re5 222, Piso 14 Unidad de Compra: FCFM- NIC Chile
+Demandante : .
+Fecha Envio OC. : 18*05*2020 01:14:46
+Tº'éfº"º = 5G'ºº'ºº4º77ºº Estado : Enviada a Proveedor
+o .
+ORDEN DE COMPRA N . 5523-63-AG20
+SENOR (Es) : ASOC AUTOS ALQUH_ER RAD10TA><1 EL GOLF LIMITADA A 5, ¡a, : Sandra szbelh Iglesias Torres
+DIRECCION : Av Apuqu|ndo & 5581 Las Condes Regwón Metropumana de mm) : 5522498100
+01 205 Saunagu
+¡… ¡ 79 610 g70-K FAX ¡ 552249&100
+NOMBRE ORDEN DE COMPRA : Orden de Compra generada por invuacwén a compra e'gi1 55234COT20
+FECHA ENTREGA PRODUCTOS : 197057202O
+DIRECCION DE ENVIO FACTURA : eraflores 222. PISO 14 Saumago Centro Regwdn Metropohlana de. Sarmago
+DIRECCION DE DESPACHO : Mranores 222, Piso 14 Sanuago Centro Reg… Mempº…e… (… 55…90
+METODO DE DESPACHO : A convemr
+FORMA DE PAGO : 30 días contra la recepcwón conforme de Ia Íaclura
+CONTACTO GC : Cristián Gerardo Huerta Gomez 56-02-28A07700 chuena©mc (;1
+Código / ID Producto Cantidad! Especiñcacienes Especificaciones Precio Descuento Cargos Valor Total
+Licitación CM Unidad Comprador Proveedor Unitario
+7811180A Servwcios de ¡ex! 1 Unidad Servimcs de lras!ado de Servicms de traslado de 1 500 000 0 0,00 0,00 1 500 000
+funcmnarios de! Centro funcionamos de! Centro (]
+NIC CHILE Regwon NIC CHILE Reg…
+Metrºpoluana Perwodo Metropo!ilana Período
+Mayo a Septiembre Mayo a Sepuembre
+2020 Segun Couzecwon 2020 Segun Cctizacwon
+20200513701 20200513701
+Orden de Cºmpra Neto $ 1.500.000
+Adqmsicwón igual o
+inferior a 30 UTM (Debe ºº'º- 5 º
+presentar 3 Cargos $ 0
+couzacwones)
+Subtºtal 5 1.5nn.nuo
+Exento 5 0
+Total $ 1.500.nuo
+Disponibilidad Presupuestaria: Esla orden de compra cuenta con Ceniñcado de Disponibilidad Presupuestaria (CDP) () Justiñcación
+Presupuestaria (revisar en la sección adjuntos)
+Fuente Financiamento: CENTRO MC CH1LE 1955
+Observaciones:
+Servicios de translado de funcwonarwos y servwcwos de transporte de va…a y encargos, Cener NIC CHILE. Umverswdad de Ome.
+Derechos dew Pro…dor dew Mercado mm…
+1 Derecha = em…… … r……» … ¿… p……
+¿ Deren>m a pamnmaren ……aao Mmm 190311!anamame y sm amm…ames alhumnas.
+3 Derecha a …… ¿a …… wrw=.mdu … ¿ lieuqu …… esmblecwdu … … bases de Me……—
+4 m…… ¡ W…… … …… …. … ………… ……p……»…= ….| m……
+¡ Admmdw y aun…… sui producla5y se…… emre105 mg…ms compradores. …… o …o ……¿dos … procesos de …… o …¡……6… en de……
+r, Derecha = m…… … ».a …g…… …… n= mnlmllslas ¿¿ … Mmlmstmu)ude1Esladux2>111=Pfove=d)vzs y a … =leeg=r documeulacmu … == m…… zcredwzdn »… ¿sk
+Espemñzacwones
+=… …… »… …… …; n »…. … » …… …….n “ »,… »… W…, …… …… > »1 »: …Wp…… ……¡….…………… 1/…4……»…… ………w ……
 
