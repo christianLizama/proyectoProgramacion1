@@ -33,12 +33,10 @@ public class MatrizDatos {
 
     Button confirmar = new Button("Crear documento");
     
-    Button seleccionarTodo = new Button("Seleccionar todo");
-    
     
     int apareceBoton = 0;
 
-    int j = 1;
+    int j = 2;
 
     public ScrollPane getExplorer() {
         return explorer;
@@ -54,14 +52,31 @@ public class MatrizDatos {
 
     public void muestraDeMatriz(ArrayList<RectangulosMatriz> Datos) {
         explorer.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        CheckBox seleccionarTodo = new CheckBox();
 
         ArrayList<String> textosSelec = new ArrayList<>();
         ArrayList<CheckBox> checkboxs = new ArrayList<>();
+        ArrayList<TextArea> textos = new ArrayList<>();
         
-        int x = 0;
-
+        int x = 1;
+        
+       
         confirmar.setDisable(true);
-
+        
+        //matrizCheck.add(seleccionarTodo, 0, 3);
+        
+        Label all = new Label("All");
+        
+        Button espacio2 = new Button();
+        espacio2.setVisible(false);
+        espacio2.setDisable(true);
+        espacio2.setPrefHeight(40);
+        
+        matrizCheck.add(all, 1, 0);
+        matrizCheck.add(espacio2, 0, 0);
+        matrizCheck.add(seleccionarTodo, 2, 0);
+        
+        //Añadimos el nombre más el text area que permite editar el texto extraido
         for (int i = 0; i < Datos.size(); i++) {
             Label nombreTexto = new Label(Datos.get(i).getNombre());
             nombreTexto.setStyle("-fx-backgroud-color: yellow; -fx-text-fill: black;");
@@ -83,34 +98,32 @@ public class MatrizDatos {
             Button espacio = new Button();
             espacio.setVisible(false);
             espacio.setDisable(true);
-
+            
+            
             matrizCheck.add(nombreTexto, 0, x + i);
+            
+            
             x++;
             matrizCheck.add(areaDeExtraccion, 0, j);
             matrizCheck.add(espacio, 1, j);
             matrizCheck.add(agregar, 2, j);
-
             j++;
             j++;
             
             checkboxs.add(agregar);
-            
-            
-            
-            
-            
-            
+            textos.add(areaDeExtraccion);
             
             agregar.setOnAction((event) -> {
                 if (agregar.isSelected()) { //Se añade
                     areaDeExtraccion.setDisable(true);
                     areaDeExtraccion.setOpacity(100);
                     confirmar.setDisable(false);
-
                     apareceBoton++;
                     textosSelec.add(nombreTexto.getText() + ": " + areaDeExtraccion.getText());
 
                 } else {//SE borra
+                    seleccionarTodo.setSelected(false);
+
                     areaDeExtraccion.setDisable(false);
                     apareceBoton--;
                     if (apareceBoton == 0) {
@@ -140,20 +153,42 @@ public class MatrizDatos {
             }
 
             guardarEnTXT(textoFinal, "ExtraccionFinal.txt");
-
+            
         });
         
-        seleccionarTodo.setOnAction((event) -> {
-            int k =1;
-            confirmar.setDisable(false);
-            for (CheckBox checkbox : checkboxs) {
-                checkbox.setSelected(true);
-                apareceBoton++;
+        seleccionarTodo.setOnAction((event) -> {   
+            if(seleccionarTodo.isSelected()){
+                String textoTotal="";
+                confirmar.setDisable(false);
+                
+                textosSelec.clear();
+                for (int i = 0; i < checkboxs.size(); i++) {
+                    
+                    
+                    CheckBox aux = checkboxs.get(i);
+                    aux.setSelected(true);
+                    TextArea aux2 = textos.get(i);
+                    aux2.setDisable(true);
+                    
+                    textosSelec.add(Datos.get(i).getNombre()+ ": " + aux2.getText());
+                    
+                    
+                } 
             }
+            else{
+                confirmar.setDisable(true);
+                for (int i = 0; i < checkboxs.size(); i++) {
+                    CheckBox aux = checkboxs.get(i);
+                    aux.setSelected(false);
+                    TextArea aux2 = textos.get(i);
+                    aux2.setDisable(false);
+                }
+                textosSelec.clear();
+            }    
         });
        
         matrizCheck.add(confirmar, 0, j + 1);
-        matrizCheck.add(seleccionarTodo, 0, j + 2);
+        //matrizCheck.add(seleccionarTodo, 0, j + 2);
     }
 
     public void guardarEnTXT(String texto, String nombreArchivo) {

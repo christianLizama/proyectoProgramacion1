@@ -131,23 +131,27 @@ public class Pantalla2Controller implements Initializable{
             try (PDDocument documento = PDDocument.load(pdfFile)) {
                 
                 PDFRenderer pdfRenderer = new PDFRenderer(documento);
-                //recorre todas las paginas que posea un pdf (en este caso se usaran pdf de una sola pag)
                 
                 //Numero de pagina, escala, tipo de imagen
-                BufferedImage bim = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
-                //BufferedImage bim = pdfRenderer.renderImage(0, 5);
+                //BufferedImage bim = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
+                BufferedImage bim = pdfRenderer.renderImage(0, 5/2,ImageType.BINARY);
+                BufferedImage bim2 = pdfRenderer.renderImage(0, 5/2,ImageType.GRAY);
+                
+                //Seteamos la imagen binaria para la lectura
+                lectorOcr.setImagen(bim);
+                
                 //Se guarda en la carpeta del proyecto el pdf convertido en imagen
-                File file = new File("imagen.png");
-                ImageIO.write(bim, "png", file);
+                File file2 = new File("imagenMuestra.png");
+                
+                //Archivos de salida
+                File outputfile2 = new File("imagenesPDF/imagenMuestra.png");
 
-                File outputfile = new File("imagen.png");
-
-                ImageIO.write(bim, "png", outputfile);//Se crea el archivo
-
-                Image image = new Image(new File("imagen.png").toURI().toString());//Se carga la imagen
+                ImageIO.write(bim2, "png", outputfile2);//Se crea el archivo que ve el usuario
+                
+                Image image = new Image(new File("imagenesPDF/imagenMuestra.png").toURI().toString());//Se carga la imagen
 
                 lectorOcr.leerImagenEntera();
-
+                
                 ImageView imagenPDF = new ImageView(image);//Se crea un archivo de tipo imageView para poder visualizar
 
                 //Se definen los tamaños de la imagen
@@ -195,17 +199,16 @@ public class Pantalla2Controller implements Initializable{
         //Obtenemos el texto del documento
         ocr = lectorOcr.getTextoOCR();
         
-        //Asignamos sus propiedades
-        ocr.setLayoutX((anchoPantalla*razon1)+10);
-        ocr.setLayoutY(45);
-        ocr.setPrefSize(anchoPantalla*razon1, altoPantalla*razon2);
-        
         //Asignamos propiedades del scroll con matriz
-        scrollContenidos.setLayoutX((anchoPantalla*razon1)+10);
+        scrollContenidos.setLayoutX((anchoPantalla*0.65)+10);
         scrollContenidos.setLayoutY(45);
         scrollContenidos.setPrefSize((anchoPantalla*razon1)-100, (altoPantalla*razon2)-45);
         scrollContenidos.setVisible(false);
         
+        //Asignamos sus propiedades
+        ocr.setLayoutX((anchoPantalla*0.65));
+        ocr.setLayoutY(45);
+        ocr.setPrefSize((anchoPantalla*0.35), (altoPantalla*razon2)-45);
         
         //Asignamos todas las propiedas al scroll
         setPropiedadesScroll(dibujosScroll,union);
@@ -216,15 +219,11 @@ public class Pantalla2Controller implements Initializable{
         contenedorTotal.setLayoutY(45);
         estaSeguro.setLayoutX(306);
         
-        
-        
-        
         //Añadimos todo a la escena completa
         escenaCompleta.getChildren().addAll(contenedorTotal,ocr,scrollContenidos,botonDibujar,botonIzqq,botonDerr,botonBorrar,botonGuardar,botonLeer,estaSeguro,botonAlternar);// Se añade la pantalla de editar y la imagen del PDF
-        Scene escene = new Scene(escenaCompleta,(anchoPantalla*razon1)*2, altoPantalla*razon2);//Se carga la escena completa en la escena que se mostrará
+        Scene escene = new Scene(escenaCompleta,anchoPantalla, altoPantalla);//Se carga la escena completa en la escena que se mostrará
         
         //Asignamos la posición de los botones
-        
         botonIzqq.setLayoutX(51);
         botonDerr.setLayoutX(102);
         botonBorrar.setLayoutX(153);
@@ -241,12 +240,12 @@ public class Pantalla2Controller implements Initializable{
                 if(newValue == null){
                     //System.out.println("No hay boton pulsado");
                 }
-                //al tener el boton borrar pulsado se permite borrar
+                //Al tener el boton borrar pulsado se permite borrar
                 if(botonBorrar.isSelected()){
                     //System.out.println("Se ha pulsado el boton borrar");
                     eliminarRectangulo();
                 }
-                //al tener el boton dibujar pulsado se permite dibujar
+                //Al tener el boton dibujar pulsado se permite dibujar
                 if(botonDibujar.isSelected()){
                     //System.out.println("Se ha pulsado el boton dibujar");
                     //dibujarRectangulos();
@@ -255,7 +254,7 @@ public class Pantalla2Controller implements Initializable{
                     dibujosScroll.setPannable(false);
                     //coordenadas(dibujos);
                 }
-                //si el boton dibujar no se encuentra pulsado no se permite obtener coordenadas
+                //Si el boton dibujar no se encuentra pulsado no se permite obtener coordenadas
                 else if(!botonDibujar.isPressed()){
                     union.setOnMousePressed(null);
                     union.setCursor(Cursor.DEFAULT);
@@ -263,11 +262,12 @@ public class Pantalla2Controller implements Initializable{
                 }
             }
         });
+        
         //Se añade la funcion de guardar una plantilla
         guardarPlantillaJson();
         
         //Se añade la funcion del boton para leer json
-        leerPlantilla();
+        leerPlantilla(ocr);
         
         //Se añade la funcion de control z en el boton que contiene la flecha hacia atras
         pulsarBotonAtras();
@@ -277,12 +277,12 @@ public class Pantalla2Controller implements Initializable{
         
         botonAlternarAccion(ocr);
         
-        //se añaden los botones al grupo que los contiene
+        //Se añaden los botones al grupo que los contiene
         botonDibujar.setToggleGroup(GrupoBotones);
         botonBorrar.setToggleGroup(GrupoBotones);
         
         addKeyHandler(escene);
-        stage.setResizable(false);
+        stage.setMaximized(true);
         stage.setScene(escene);//Se monta la escena en el escenario
         stage.show();//Se muestra el escenario
  
@@ -291,7 +291,9 @@ public class Pantalla2Controller implements Initializable{
     public void botonAlternarAccion(TextArea ocr){
         
         botonAlternar.setOnAction((event) -> {
-            
+            botonDibujar.setSelected(false);
+            botonBorrar.setSelected(false);
+            //Se cambia la escena para mostrar la extracción de areas especificas
             if(cambiadorDeEscena==0){
                 
                 ocr.setVisible(false);
@@ -305,17 +307,14 @@ public class Pantalla2Controller implements Initializable{
                 scrollContenidos.setVisible(true);
                 cambiadorDeEscena=1;
             }
+            //Se muestra el texto leido completamente
             else{
                 
                 ocr.setVisible(true);
                 scrollContenidos.setVisible(false);
                 cambiadorDeEscena=0;
                 
-                
             }
-            
-            
-            
         });
     }
     
@@ -323,7 +322,7 @@ public class Pantalla2Controller implements Initializable{
     public void setPropiedadesScroll(ScrollPane dibujosScroll,Pane union){
         dibujosScroll.setPannable(true);
         dibujosScroll.setContent(union);
-        dibujosScroll.setPrefSize(anchoPantalla*razon1, (altoPantalla*razon2)-45);
+        dibujosScroll.setPrefSize(anchoPantalla*0.65, (altoPantalla*razon2)-45);
         dibujosScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         dibujosScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
     }
@@ -350,7 +349,7 @@ public class Pantalla2Controller implements Initializable{
     
     
     //Metodo que muestra una alerta si se pulsa el boton eliminar plantilla
-    public void eliminarPlantilla(File jsonFile){
+    public void eliminarPlantilla(File jsonFile,TextArea ocr){
         
         ButtonType yes = new ButtonType("Si");
         ButtonType no = new ButtonType("No");
@@ -358,7 +357,7 @@ public class Pantalla2Controller implements Initializable{
         Alert eliminar = new Alert(AlertType.CONFIRMATION, "", yes,no);
         
         eliminar.setHeaderText("Está seguro que desea eliminar la plantilla");
-       
+        
         eliminar.setResizable(false);
         
         eliminar.showAndWait();
@@ -367,6 +366,11 @@ public class Pantalla2Controller implements Initializable{
         
         if(resultado.getText().equals("Si")){
             jsonFile.delete();
+            
+            ocr.setVisible(true);
+            scrollContenidos.setVisible(false);
+            cambiadorDeEscena=0;
+            
             System.out.println("Se ha eliminado el archivo: "+jsonFile.getPath());
             //se deshabilita el boton eliminar ya que no hay plantilla guardada
             estaSeguro.setDisable(true);
@@ -377,7 +381,7 @@ public class Pantalla2Controller implements Initializable{
     }
     
     //Se lee una plantilla creada
-    public void leerPlantilla(){
+    public void leerPlantilla(TextArea ocr){
         //Cuando apretamos el boton Leer
         botonLeer.setOnAction((event) -> {
             FileChooser fileChooser = new FileChooser();
@@ -396,7 +400,6 @@ public class Pantalla2Controller implements Initializable{
                 estaSeguro.setDisable(false);
                 JSON.leerJson(jsonFile);
 
-
                 System.out.println(jsonFile.getName());
 
                 ArrayList<Button> rectAux =JSON.getRectangulosLeidos();
@@ -404,7 +407,8 @@ public class Pantalla2Controller implements Initializable{
                 System.out.println("primer aux: " + rectAux.size());
 
                 dibujos.getChildren().clear();
-
+                
+                
                 for (Button rectLeidos : rectAux) {
                     dibujos.getChildren().add(rectLeidos);
                     ArrayList<Button> rectangulosAux = new ArrayList<>();
@@ -421,13 +425,16 @@ public class Pantalla2Controller implements Initializable{
                     estados.agregarPila(guardados);
                     System.out.println(dibujos.getChildren().size());
 
-
                 }
+                activarBotonAlternar();
+
+                
+                
                 rectAux.clear();
                 //Funcion eliminar plantilla cargada
                 estaSeguro.setOnAction((event2) -> {
 
-                    eliminarPlantilla(jsonFile);
+                    eliminarPlantilla(jsonFile,ocr);
 
                 });
             }
@@ -561,7 +568,6 @@ public class Pantalla2Controller implements Initializable{
                                     //Creamos un arraylist el cual servira para guardar todos los rectangulos creados
                                     ArrayList<Button> rectangulosAux = new ArrayList<>();
 
-
                                     estados.pilaY.clear();
                                     //Se agregan al arraylist todos los dibujos creados
                                     for (int i = 0; i < dibujos.getChildren().size(); i++) {
@@ -639,34 +645,33 @@ public class Pantalla2Controller implements Initializable{
             });          
         }
     }
-    //metodo que añade las imagenes a los botones
+    //Metodo que añade las imagenes a los botones
     public void setImagenesBotones(){
         
         //Iconos de los botones
-        Image imagenDibujar = new Image(new File("botonDib.png").toURI().toString(),35,36,false,true);
+        Image imagenDibujar = new Image(new File("botones/botonDib.png").toURI().toString(),35,36,false,true);
         ImageView iconoDibujar = new ImageView(imagenDibujar);
 
-        Image imagenBorrar = new Image(new File("botonBorrar.png").toURI().toString(),35,36,false,true);
+        Image imagenBorrar = new Image(new File("botones/botonBorrar.png").toURI().toString(),35,36,false,true);
         ImageView iconoBorrar = new ImageView(imagenBorrar);
 
-        Image imagenAtras = new Image(new File("botonIzq.png").toURI().toString(),35,36,false,true);
+        Image imagenAtras = new Image(new File("botones/botonIzq.png").toURI().toString(),35,36,false,true);
         ImageView iconoVolverAtras = new ImageView(imagenAtras);
 
-        Image imagenAdelante = new Image(new File("botonDer.png").toURI().toString(),35,36,false,true);
+        Image imagenAdelante = new Image(new File("botones/botonDer.png").toURI().toString(),35,36,false,true);
         ImageView iconoVolverAdelante = new ImageView(imagenAdelante);
         
-        Image imagenGuardar = new Image(new File("botonGuardar.png").toURI().toString(),35,36,false,true);
+        Image imagenGuardar = new Image(new File("botones/botonGuardar.png").toURI().toString(),35,36,false,true);
         ImageView iconoGuardar = new ImageView(imagenGuardar);
         
-        Image imagenLeer = new Image(new File("botonLeer.png").toURI().toString(),35,36,false,true);
+        Image imagenLeer = new Image(new File("botones/botonLeer.png").toURI().toString(),35,36,false,true);
         ImageView iconoLeer = new ImageView(imagenLeer);
         
-        Image imagenDeleteJson = new Image(new File("botonEliminarJson.png").toURI().toString(),35,36,false,true);
+        Image imagenDeleteJson = new Image(new File("botones/botonEliminarJson.png").toURI().toString(),35,36,false,true);
         ImageView iconoDeleteJson = new ImageView(imagenDeleteJson);
         
-        Image imagenAlternar = new Image(new File("botonCambiar.png").toURI().toString(),35,36,false,true);
+        Image imagenAlternar = new Image(new File("botones/botonCambiar.png").toURI().toString(),35,36,false,true);
         ImageView iconoAlternar = new ImageView(imagenAlternar);
-        
         
         Tooltip tooltip;
         
@@ -778,6 +783,7 @@ public class Pantalla2Controller implements Initializable{
         }
         
     }
+    
     public void funcionY(){
         
         System.out.println("Se ha pulsado control Y");

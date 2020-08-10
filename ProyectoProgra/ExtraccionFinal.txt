@@ -1,2 +1,3 @@
-popo: No todos los casos que se estudian en el mundo real tienen que ver con situaciones o narracionesde clientes; en algunos casos pueden solicitarles ”crear el nuevo Uber", o ”copiar la página de PC
-Factory". Esta es una de esas situaciones.
+dd: UTAL * Requisitos de Software
+eee: Caso: Gestión de reservas de billetes de avión
+ee: 20204
